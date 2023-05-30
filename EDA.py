@@ -34,7 +34,7 @@ import matplotlib.pyplot as plt
 from tools.my_functions import (
     modify_data_types,
     get_column_types,
-    top_df,
+    top_df_final,
     barv_plotly,
     pie_graph,
     sec_bar_mdf,
@@ -251,7 +251,7 @@ class EDA:
 
                     # Barra lateral (sidebar)
 
-                    self.df_top_c = top_df(
+                    self.df_top_c = top_df_final(
                         self.df,
                         self.main_column,
                         self.main_num_col,

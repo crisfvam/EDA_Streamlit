@@ -694,45 +694,99 @@ def top_df_complete(df, main_cat_col, main_num_col, main_date_col, ascen):
 #     return df_main_var
 
 
-def top_df(df, main_column, main_num_col, main_cat_col, ascen):
+def top_df_final(df, main_column, main_num_col, main_cat_col, ascen):
     # Creación del DataFrame principal agrupado por la columna principal
-    df_main_var = df.groupby([main_column], as_index=False)[main_num_col].agg(
-        {"total_" + main_num_col: "sum"}
-    )
+    df_main_var = df.groupby(main_column, as_index=False)[main_num_col].sum()
 
-    # Columna que contiene la categoría con la suma más alta de la columna numérica para cada valor de la columna principal
-    df_main_var = df_main_var.merge(
-        df.groupby([main_column, main_cat_col], as_index=False)[main_num_col]
-        .agg({main_cat_col + "_with_most_" + main_num_col: "sum"})
-        .sort_values(by=main_num_col, ascending=False)
-        .groupby(main_column)
-        .first(),
-        on=main_column,
-    )
+    # Renombrar la columna numérica
+    df_main_var.rename({main_num_col: "total_" + main_num_col}, axis=1, inplace=True)
 
-    # Columna que contiene la suma total de la relación entre la categoría anterior y los valores de la columna principal
-    df_main_var = df_main_var.merge(
-        df.groupby([main_column, main_cat_col], as_index=False)[main_num_col]
-        .agg({"total_" + main_num_col + "_of_this_" + main_cat_col: "sum"})
-        .sort_values(by=main_num_col, ascending=False)
-        .groupby(main_column)
-        .first(),
-        on=main_column,
-    )
+    # Obtener la categoría con la suma más alta de la columna numérica para cada valor de la columna principal
+    df_main_var[
+        main_cat_col
+        + "_with_most_"
+        + main_num_col
+        + "_of_the_"
+        + main_column.split("_")[0]
+    ] = [
+        df.loc[df[main_column] == i]
+        .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
+        .sum()
+        .sort_values(by=main_num_col, ascending=False)[main_cat_col]
+        .iloc[0]
+        for i in df_main_var[main_column]
+    ]
 
-    # Columna que contiene el promedio de la suma de la relación entre la categoría anterior y los valores de la columna principal
-    df_main_var = df_main_var.merge(
-        df.groupby([main_column, main_cat_col], as_index=False)[main_num_col]
-        .agg({"AVG_" + main_num_col + "_of_this_" + main_cat_col: "mean"})
-        .sort_values(by=main_num_col, ascending=False)
-        .groupby(main_column)
-        .first(),
-        on=main_column,
-    )
+    # Obtener la suma total de la relación entre la categoría anterior y los registros de la columna principal
+    df_main_var[
+        "total_"
+        + main_num_col
+        + "_of_this_"
+        + main_cat_col
+        + "_by_"
+        + main_column.split("_")[0]
+    ] = [
+        df.loc[df[main_column] == i]
+        .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
+        .sum()
+        .sort_values(by=main_num_col, ascending=False)[main_num_col]
+        .iloc[0]
+        for i in df_main_var[main_column]
+    ]
+
+    # Obtener el promedio de la relación entre la categoría anterior y los registros de la columna principal
+    df_main_var[
+        "AVG_"
+        + main_num_col
+        + "_of_this_"
+        + main_cat_col
+        + "_by_"
+        + main_column.split("_")[0]
+    ] = [
+        round(
+            df.loc[df[main_column] == i]
+            .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
+            .mean()
+            .sort_values(by=main_num_col, ascending=False)[main_num_col]
+            .iloc[0],
+            2,
+        )
+        for i in df_main_var[main_column]
+    ]
 
     df_main_var = df_main_var.sort_values(by="total_" + main_num_col, ascending=ascen)
 
     return df_main_var
+
+
+# def top_df(df, main_column, main_num_col, main_cat_col, ascen):
+#     # Creación del DataFrame principal agrupado por la columna principal
+#     df_main_var = df.groupby(main_column, as_index=False)[main_num_col].sum()
+
+#     # Obtener la categoría con la suma más alta de la columna numérica para cada valor de la columna principal
+#     max_cat_indices = df.groupby(main_column)[main_num_col].idxmax()
+#     df_max_cat = df.loc[max_cat_indices][[main_column, main_cat_col]].reset_index(
+#         drop=True
+#     )
+#     df_main_var = df_main_var.merge(df_max_cat, on=main_column)
+
+#     # Obtener la suma total y el promedio para cada valor de la columna principal
+#     df_main_sum = (
+#         df.groupby(main_column, as_index=False)[main_num_col]
+#         .sum()
+#         .rename(columns={main_num_col: "total_" + main_num_col})
+#     )
+#     df_main_avg = (
+#         df.groupby(main_column, as_index=False)[main_num_col]
+#         .mean()
+#         .rename(columns={main_num_col: "AVG_" + main_num_col})
+#     )
+#     df_main_var = df_main_var.merge(df_main_sum, on=main_column)
+#     df_main_var = df_main_var.merge(df_main_avg, on=main_column)
+
+#     df_main_var = df_main_var.sort_values(by="total_" + main_num_col, ascending=ascen)
+
+#     return df_main_var
 
 
 # def top_df(df, main_column, main_num_col, main_cat_col, ascen):
