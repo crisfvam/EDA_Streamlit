@@ -407,7 +407,7 @@ class EDA:
                 # )
                 # st.plotly_chart(fig)
 
-                title = f"<h3 style='text-align: center; font-family: Arial, sans-serif;'><b>{self.ascen.capitalize()} {self.main_column.replace('_', ' ')} with most {self.main_num_col.replace('_', ' ')} per {self.main_cat_col.replace('_', ' ')}</b></h3>"
+                title = f"<h3 style='text-align: center; font-family: Arial, sans-serif;'><b>{self.ascend.capitalize()} {self.main_column.replace('_', ' ')} with most {self.main_num_col.replace('_', ' ')} per {self.main_cat_col.replace('_', ' ')}</b></h3>"
                 st.markdown(title, unsafe_allow_html=True)
                 st.write(self.df_top_c.shape)
                 st.dataframe(self.df_top_c)
