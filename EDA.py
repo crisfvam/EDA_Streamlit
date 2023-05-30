@@ -109,7 +109,6 @@ class EDA:
         if self.dataset is not None:
             modify_data_types(self.dataset, categories_number=150)
             options = {
-                "Contexto": "Contexto 📊",
                 "EDA": "EDA 🔍",
                 "Power-Bi": "Power-Bi 📈",
                 "Insights": "Insights ✅",
@@ -121,52 +120,52 @@ class EDA:
                 list(options.keys()),
                 format_func=lambda x: options[x],
             )
-            if selected_option == "Contexto":
-                # Establecer el estilo de letra más grande
-                st.markdown(
-                    "<style>h1 {font-size: 40px !important;}</style>",
-                    unsafe_allow_html=True,
-                )
+            # if selected_option == "Contexto":
+            #     # Establecer el estilo de letra más grande
+            #     st.markdown(
+            #         "<style>h1 {font-size: 40px !important;}</style>",
+            #         unsafe_allow_html=True,
+            #     )
 
-                # Cambiar el estilo de letra a una más elegante
-                st.markdown(
-                    "<style>h1 {font-family: 'Garamond', serif;}</style>",
-                    unsafe_allow_html=True,
-                )
+            #     # Cambiar el estilo de letra a una más elegante
+            #     st.markdown(
+            #         "<style>h1 {font-family: 'Garamond', serif;}</style>",
+            #         unsafe_allow_html=True,
+            #     )
 
-                # Cambiar el estilo de letra a una más elegante para el texto extraído
-                st.markdown(
-                    "<style>.extracted-text {font-family: 'Garamond', serif;}</style>",
-                    unsafe_allow_html=True,
-                )
+            #     # Cambiar el estilo de letra a una más elegante para el texto extraído
+            #     st.markdown(
+            #         "<style>.extracted-text {font-family: 'Garamond', serif;}</style>",
+            #         unsafe_allow_html=True,
+            #     )
 
-                # Crear el título con el estilo de letra y formato deseado
-                titulo = "<h1 style='text-align: center; color: #88ff88; font-style: italic;'>Giant Supermarket</h1>"
-                st.markdown(titulo, unsafe_allow_html=True)
+            #     # Crear el título con el estilo de letra y formato deseado
+            #     titulo = "<h1 style='text-align: center; color: #88ff88; font-style: italic;'>Giant Supermarket</h1>"
+            #     st.markdown(titulo, unsafe_allow_html=True)
 
-                # Resto de tu código...
-                url = (
-                    self.url
-                )  # Asumiendo que la URL está almacenada en el atributo "url" de la clase
-                response = requests.get(url)
-                soup = BeautifulSoup(response.content, "html.parser")
-                elements = soup.select(
-                    ".title-after_title"
-                )  # Aplicar el selector .title-after_title
+            #     # Resto de tu código...
+            #     url = (
+            #         self.url
+            #     )  # Asumiendo que la URL está almacenada en el atributo "url" de la clase
+            #     response = requests.get(url)
+            #     soup = BeautifulSoup(response.content, "html.parser")
+            #     elements = soup.select(
+            #         ".title-after_title"
+            #     )  # Aplicar el selector .title-after_title
 
-                extracted_text = [element.get_text(strip=True) for element in elements]
+            #     extracted_text = [element.get_text(strip=True) for element in elements]
 
-                # Aplicar el estilo de letra y formato deseado al texto extraído
-                styled_text = (
-                    "<p class='extracted-text' style='font-size: 20px;'>"
-                    + "</p><p class='extracted-text' style='font-size: 20px;'>".join(
-                        extracted_text
-                    )
-                    + "</p>"
-                )
-                st.markdown(styled_text, unsafe_allow_html=True)
+            #     # Aplicar el estilo de letra y formato deseado al texto extraído
+            #     styled_text = (
+            #         "<p class='extracted-text' style='font-size: 20px;'>"
+            #         + "</p><p class='extracted-text' style='font-size: 20px;'>".join(
+            #             extracted_text
+            #         )
+            #         + "</p>"
+            #     )
+            #     st.markdown(styled_text, unsafe_allow_html=True)
 
-                st.dataframe(self.dataset)
+            #     st.dataframe(self.dataset)
 
             if selected_option == "EDA":
                 self.df = self.dataset.copy()
@@ -410,7 +409,7 @@ class EDA:
                 title = f"<h3 style='text-align: center; font-family: Arial, sans-serif;'><b>{self.ascend.capitalize()} {self.main_column.replace('_', ' ')} with most {self.main_num_col.replace('_', ' ')} per {self.main_cat_col.replace('_', ' ')}</b></h3>"
                 st.markdown(title, unsafe_allow_html=True)
                 st.write(self.df_top_c.shape)
-                st.dataframe(self.df_top_c.head(10))
+                st.dataframe(self.df_top_c)
 
                 # self.df_top_d = top_df_simple(
                 #     self.df,
@@ -428,7 +427,7 @@ class EDA:
                     .sum()
                 )
                 st.write(self.df_top_d.shape)
-                st.dataframe(self.df_top_d.head(10))
+                st.dataframe(self.df_top_d)
 
                 # self.col1, self.col2 = st.columns(2)
 
