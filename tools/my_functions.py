@@ -54,7 +54,7 @@ def clean_column_names(df):
     return df
 
 
-def data_diagnosis(df):
+def data_d(df):
     num_duplicates = df.duplicated().sum()
 
     # Mostrar el número de duplicados en Markdown centrado
@@ -695,79 +695,120 @@ def top_df_complete(df, main_cat_col, main_num_col, main_date_col, ascen):
 
 
 def top_df(df, main_column, main_num_col, main_cat_col, ascen):
-    # Creación de primero; la columna de consulta principal y segundo la columna numerica
-    df_main_var = (
-        df.groupby([main_column], as_index=False)[main_num_col]
-        .sum()
+    # Creación del DataFrame principal agrupado por la columna principal
+    df_main_var = df.groupby([main_column], as_index=False)[main_num_col].agg(
+        {"total_" + main_num_col: "sum"}
+    )
+
+    # Columna que contiene la categoría con la suma más alta de la columna numérica para cada valor de la columna principal
+    df_main_var = df_main_var.merge(
+        df.groupby([main_column, main_cat_col], as_index=False)[main_num_col]
+        .agg({main_cat_col + "_with_most_" + main_num_col: "sum"})
         .sort_values(by=main_num_col, ascending=False)
+        .groupby(main_column)
+        .first(),
+        on=main_column,
     )
 
-    # Renombrando la columna numerica, ya que es la sumatoria total por registro de la columna de consulta principal
-    df_main_var.rename({main_num_col: "total_" + main_num_col}, axis=1, inplace=True)
-
-    # Columna que arroja los registros de la variable categorica que mas sumatoria tiene de la variable numerica por variable principal de consulta
-    df_main_var[
-        main_cat_col
-        + "_with_most_"
-        + main_num_col
-        + "_of_the_"
-        + main_column.split("_")[0]
-    ] = [
-        list(
-            df.loc[(df[main_column] == i)]
-            .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
-            .sum()
-            .sort_values(by=main_num_col, ascending=False)[main_cat_col]
-        )[0]
-        for i in df_main_var[main_column]
-    ]
-
-    # Columna que arroja el total de la sumatoria de la relacion entre el registro categorico de la columna anterior y  los registros de la variable principal de consulta
-    df_main_var[
-        "total_"
-        + main_num_col
-        + "_of_this_"
-        + main_cat_col
-        + "_by_"
-        + main_column.split("_")[0]
-    ] = [
-        list(
-            df.loc[(df[main_column] == i)]
-            .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
-            .sum()
-            .sort_values(by=main_num_col, ascending=False)[main_num_col]
-        )[0]
-        for i in df_main_var[main_column]
-    ]
-
-    # Columna que arroja el promedio de la sumatoria de la relacion entre el registro categorico de la columna anterior y  los registros de la variable principal de consulta
-    df_main_var[
-        "AVG_"
-        + main_num_col
-        + "_of_this_"
-        + main_cat_col
-        + "_by_"
-        + main_column.split("_")[0]
-    ] = [
-        round(
-            (
-                list(
-                    df.loc[(df[main_column] == i)]
-                    .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
-                    .mean()
-                    .sort_values(by=main_num_col, ascending=False)[main_num_col]
-                )[0]
-            ),
-            2,
-        )
-        for i in df_main_var[main_column]
-    ]
-
-    df_main_var = df_main_var.sort_values(
-        by=df_main_var.columns.to_list()[1], ascending=ascen
+    # Columna que contiene la suma total de la relación entre la categoría anterior y los valores de la columna principal
+    df_main_var = df_main_var.merge(
+        df.groupby([main_column, main_cat_col], as_index=False)[main_num_col]
+        .agg({"total_" + main_num_col + "_of_this_" + main_cat_col: "sum"})
+        .sort_values(by=main_num_col, ascending=False)
+        .groupby(main_column)
+        .first(),
+        on=main_column,
     )
+
+    # Columna que contiene el promedio de la suma de la relación entre la categoría anterior y los valores de la columna principal
+    df_main_var = df_main_var.merge(
+        df.groupby([main_column, main_cat_col], as_index=False)[main_num_col]
+        .agg({"AVG_" + main_num_col + "_of_this_" + main_cat_col: "mean"})
+        .sort_values(by=main_num_col, ascending=False)
+        .groupby(main_column)
+        .first(),
+        on=main_column,
+    )
+
+    df_main_var = df_main_var.sort_values(by="total_" + main_num_col, ascending=ascen)
 
     return df_main_var
+
+
+# def top_df(df, main_column, main_num_col, main_cat_col, ascen):
+#     # Creación de primero; la columna de consulta principal y segundo la columna numerica
+#     df_main_var = (
+#         df.groupby([main_column], as_index=False)[main_num_col]
+#         .sum()
+#         .sort_values(by=main_num_col, ascending=False)
+#     )
+
+#     # Renombrando la columna numerica, ya que es la sumatoria total por registro de la columna de consulta principal
+#     df_main_var.rename({main_num_col: "total_" + main_num_col}, axis=1, inplace=True)
+
+#     # Columna que arroja los registros de la variable categorica que mas sumatoria tiene de la variable numerica por variable principal de consulta
+#     df_main_var[
+#         main_cat_col
+#         + "_with_most_"
+#         + main_num_col
+#         + "_of_the_"
+#         + main_column.split("_")[0]
+#     ] = [
+#         list(
+#             df.loc[(df[main_column] == i)]
+#             .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
+#             .sum()
+#             .sort_values(by=main_num_col, ascending=False)[main_cat_col]
+#         )[0]
+#         for i in df_main_var[main_column]
+#     ]
+
+#     # Columna que arroja el total de la sumatoria de la relacion entre el registro categorico de la columna anterior y  los registros de la variable principal de consulta
+#     df_main_var[
+#         "total_"
+#         + main_num_col
+#         + "_of_this_"
+#         + main_cat_col
+#         + "_by_"
+#         + main_column.split("_")[0]
+#     ] = [
+#         list(
+#             df.loc[(df[main_column] == i)]
+#             .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
+#             .sum()
+#             .sort_values(by=main_num_col, ascending=False)[main_num_col]
+#         )[0]
+#         for i in df_main_var[main_column]
+#     ]
+
+#     # Columna que arroja el promedio de la sumatoria de la relacion entre el registro categorico de la columna anterior y  los registros de la variable principal de consulta
+#     df_main_var[
+#         "AVG_"
+#         + main_num_col
+#         + "_of_this_"
+#         + main_cat_col
+#         + "_by_"
+#         + main_column.split("_")[0]
+#     ] = [
+#         round(
+#             (
+#                 list(
+#                     df.loc[(df[main_column] == i)]
+#                     .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
+#                     .mean()
+#                     .sort_values(by=main_num_col, ascending=False)[main_num_col]
+#                 )[0]
+#             ),
+#             2,
+#         )
+#         for i in df_main_var[main_column]
+#     ]
+
+#     df_main_var = df_main_var.sort_values(
+#         by=df_main_var.columns.to_list()[1], ascending=ascen
+#     )
+
+#     return df_main_var
 
 
 def normalize(df, norm_col):
