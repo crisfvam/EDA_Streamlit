@@ -65,7 +65,7 @@ class EDA:
                 <h1 style="font-family: Helvetica Neue, serif;
                font-style: italic;
                font-weight: bold;
-               font-size: 45px;
+               font-size: 35px;
                color: white;
                background-repeat: no-repeat;
                background-size: cover;
