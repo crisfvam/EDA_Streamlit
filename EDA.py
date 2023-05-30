@@ -410,7 +410,7 @@ class EDA:
                 title = f"<h3 style='text-align: center; font-family: Arial, sans-serif;'><b>{self.ascend.capitalize()} {self.main_column.replace('_', ' ')} with most {self.main_num_col.replace('_', ' ')} per {self.main_cat_col.replace('_', ' ')}</b></h3>"
                 st.markdown(title, unsafe_allow_html=True)
                 st.write(self.df_top_c.shape)
-                st.dataframe(self.df_top_c)
+                st.dataframe(self.df_top_c.head(10))
 
                 # self.df_top_d = top_df_simple(
                 #     self.df,
@@ -427,8 +427,8 @@ class EDA:
                     ]
                     .sum()
                 )
-
-                st.dataframe(self.df_top_d)
+                st.write(self.df_top_d.shape)
+                st.dataframe(self.df_top_d.head(10))
 
                 # self.col1, self.col2 = st.columns(2)
 
