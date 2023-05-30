@@ -734,25 +734,25 @@ def top_df_final(df, main_column, main_num_col, main_cat_col, ascen):
         for i in df_main_var[main_column]
     ]
 
-    # # Obtener el promedio de la relación entre la categoría anterior y los registros de la columna principal
-    # df_main_var[
-    #     "AVG_"
-    #     + main_num_col
-    #     + "_of_this_"
-    #     + main_cat_col
-    #     + "_by_"
-    #     + main_column.split("_")[0]
-    # ] = [
-    #     round(
-    #         df.loc[df[main_column] == i]
-    #         .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
-    #         .mean()
-    #         .sort_values(by=main_num_col, ascending=False)[main_num_col]
-    #         .iloc[0],
-    #         2,
-    #     )
-    #     for i in df_main_var[main_column]
-    # ]
+    # Obtener el promedio de la relación entre la categoría anterior y los registros de la columna principal
+    df_main_var[
+        "AVG_"
+        + main_num_col
+        + "_of_this_"
+        + main_cat_col
+        + "_by_"
+        + main_column.split("_")[0]
+    ] = [
+        round(
+            df.loc[df[main_column] == i]
+            .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
+            .mean()
+            .sort_values(by=main_num_col, ascending=False)[main_num_col]
+            .iloc[0],
+            2,
+        )
+        for i in df_main_var[main_column]
+    ]
 
     df_main_var = df_main_var.sort_values(by="total_" + main_num_col, ascending=ascen)
 
