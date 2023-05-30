@@ -195,16 +195,17 @@ class EDA:
                     self.main_column = st.selectbox(
                         "Seleccione la variable a consultar", self.str_list
                     )
+
                     self.main_num_col = st.selectbox(
                         "Seleccione la variable numerica", self.num_cols
                     )
                     self.main_cat_col = st.selectbox(
                         "Seleccione la variable categorica", self.cat_cols
                     )
-
                     self.main_date_col = st.selectbox(
                         "Seleccione la variable fecha", self.date_cols
                     )
+
                     self.top = 10
                     self.orden = 1
                     # e el orden del dataframe", list(range(1, 7)))
@@ -250,13 +251,13 @@ class EDA:
 
                     # Barra lateral (sidebar)
 
-                    self.df_top_c = top_df_final(
-                        self.df,
-                        self.main_column,
-                        self.main_num_col,
-                        self.main_cat_col,
-                        self.ascen,
-                    )
+                    # self.df_top_c = top_df_final(
+                    #     self.df,
+                    #     self.main_column,
+                    #     self.main_num_col,
+                    #     self.main_cat_col,
+                    #     self.ascen,
+                    # )
 
                     # with st.sidebar:
                     #     st.title("Seleccionar gráfico")
@@ -297,8 +298,6 @@ class EDA:
                             "Graficas variables categoricas",
                             ("Barra Vertical", "Gráfico de Pastel"),
                         )
-                        barv_df = None  # Tu DataFrame de datos
-                        pie_df = None  # Tu DataFrame de datos
 
                     if option == "Barra Vertical":
                         self.df_top_s = top_df_simple(
@@ -389,68 +388,82 @@ class EDA:
 
                         st.plotly_chart(fig)
 
-                # self.df_top_c = top_df(
-                #     self.df,
-                #     self.main_column,
-                #     self.main_num_col,
-                #     self.main_cat_col,
-                #     self.top,
-                #     self.ascen,
+                # self.main_column_list = st.selectbox(
+                #     "Selection " + self.main_column.replace("_", " "),
+                #     list(self.df[self.main_column].unique()),
                 # )
 
-                # fig = barv_plotly(
-                #     self.df_top_c,
-                #     self.df_top_c.columns[0],  # Segunda columna
-                #     self.df_top_c.columns[1],  # Tercera columna
-                #     self.color,
-                # )
-                # st.plotly_chart(fig)
-
-                title = f"<h3 style='text-align: center; font-family: Arial, sans-serif;'><b>{self.ascend.capitalize()} {self.main_column.replace('_', ' ')} with most {self.main_num_col.replace('_', ' ')} per {self.main_cat_col.replace('_', ' ')}</b></h3>"
-                st.markdown(title, unsafe_allow_html=True)
-                st.write(self.df_top_c.shape)
-                st.dataframe(self.df_top_c)
-
-                # self.df_top_d = top_df_simple(
-                #     self.df,
-                #     self.main_cat_col,
-                #     self.main_date_col,
-                #     self.main_num_col,
+                # self.main_cat_col_list = st.selectbox(
+                #     "Selection " + self.main_cat_col.replace("_", " "),
+                #     list(self.df[self.main_cat_col].unique()),
                 # )
 
-                self.filtro = list(self.df[self.main_cat_col])
-                self.df_top_d = (
-                    self.df[self.df[self.main_cat_col].isin(self.filtro)]
-                    .groupby([self.main_cat_col, self.main_date_col], as_index=False)[
-                        self.main_num_col
-                    ]
-                    .sum()
+                # self.filtered_df = self.df[
+                #     (self.df[self.main_column] == self.main_column_list)
+                #     & (self.df[self.main_cat_col] == self.main_cat_col_list)
+                # ]
+                # self.filtered_df[
+                #     "Total "
+                #     + self.main_num_col
+                #     + " per "
+                #     + self.main_cat_col
+                #     + " per "
+                #     + self.main_column
+                # ] = self.filtered_df[self.main_num_col].sum()
+                # self.filtered_df[
+                #     "Mean "
+                #     + self.main_num_col
+                #     + " per "
+                #     + self.main_cat_col
+                #     + " per "
+                #     + self.main_column
+                # ] = self.filtered_df[self.main_num_col].mean()
+                # self.filtered_df[
+                #     "Min "
+                #     + self.main_num_col
+                #     + " per "
+                #     + self.main_cat_col
+                #     + " per "
+                #     + self.main_column
+                # ] = self.filtered_df[self.main_num_col].min()
+                # self.filtered_df[
+                #     "Max "
+                #     + self.main_num_col
+                #     + " per "
+                #     + self.main_cat_col
+                #     + " per "
+                #     + self.main_column
+                # ] = self.filtered_df[self.main_num_col].max()
+                # st.dataframe(self.filtered_df)
+
+                self.main_column_list = st.selectbox(
+                    "Selection " + self.main_column.replace("_", " "),
+                    list(self.df[self.main_column].unique()),
                 )
-                st.write(self.df_top_d.shape)
-                st.dataframe(self.df_top_d)
 
-                # self.col1, self.col2 = st.columns(2)
+                self.main_cat_col_list = st.selectbox(
+                    "Selection " + self.main_cat_col.replace("_", " "),
+                    list(self.df[self.main_cat_col].unique()),
+                )
 
-                # # Contenido de la primera columna (col1)
-                # with self.col1:
+                self.filtered_df = (
+                    self.df[
+                        (self.df[self.main_column] == self.main_column_list)
+                        & (self.df[self.main_cat_col] == self.main_cat_col_list)
+                    ]
+                    .agg({self.main_num_col: ["sum", "mean", "min", "max"]})
+                    .T
+                )
 
-                # # Contenido de la segunda columna (col2)
-                # with self.col2:
-                #     title = f"<h3 style='text-align: center; font-family: Arial, sans-serif;'><b>{self.ascend.replace('_', ' ').capitalize()} {self.main_date_col.replace('_', ' ')} with most {self.main_num_col.replace('_', ' ')} per {self.main_cat_col.replace('_', ' ')}</b></h3>"
-                #     st.markdown(title, unsafe_allow_html=True)
-                #     # title = f"<h3 style='text-align: center; font-family: Arial, sans-serif;'><b>Dataframe</b></h3>"
-                #     # st.markdown(title, unsafe_allow_html=True)
-                #     st.dataframe(self.df_top_d)
+                # Renombrar las columnas del DataFrame resultante
+                self.filtered_df.columns = [
+                    "Total",
+                    "Mean",
+                    "Min",
+                    "Max",
+                ]
 
-    # Generar insights
-
-    # def build_prediction_models(self):
-    #     st.write("---")
-    #     # Construir modelos de predicción
-
-    # def generate_conclusions(self):
-    #     st.write("---")
-    #     # Generar conclusiones
+                st.dataframe(self.filtered_df)
 
     def run(self, url):
         self.url = url

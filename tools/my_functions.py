@@ -754,9 +754,7 @@ def top_df_final(df, main_column, main_num_col, main_cat_col, ascen):
     #     for i in df_main_var[main_column]
     # ]
 
-    df_main_var = df_main_var.sort_values(
-        by="total_" + main_num_col, ascending=ascen
-    ).head(10)
+    df_main_var = df_main_var.sort_values(by="total_" + main_num_col, ascending=ascen)
 
     return df_main_var
 
