@@ -1443,7 +1443,7 @@ def bar_int_plotly(
     return pyo.iplot(fig)
 
 
-def barv_plotly(barv_df, barv_str_column, barv_num_col, color_v):
+def barv_plotly(barv_df, barv_str_column, barv_num_col, color_v, height_, width_):
     import plotly.graph_objs as go
 
     # Crear los datos del gráfico
@@ -1473,8 +1473,8 @@ def barv_plotly(barv_df, barv_str_column, barv_num_col, color_v):
         xaxis=dict(title=barv_str_column),
         yaxis=dict(showticklabels=False),  # Quitar los valores numéricos del eje y
         margin=dict(t=100),  # Establecer un margen superior de 100
-        height=400,  # Ajustar la altura del gráfico
-        width=510,  # Ajustar el ancho del gráfico
+        height=height_,  # Ajustar la altura del gráfico
+        width=width_,  # Ajustar el ancho del gráfico
     )
 
     # Crear la figura
@@ -1571,7 +1571,7 @@ def sec_bar_mdf(
 import plotly.express as px
 
 
-def pie_graph(pie_df, pie_str_column, pie_num_col, color_palette):
+def pie_graph(pie_df, pie_str_column, pie_num_col, color_palette, height_, width_):
     # Obtener los datos para el gráfico
     labels = pie_df[pie_str_column].tolist()
     values = pie_df[pie_num_col].tolist()
@@ -1601,14 +1601,14 @@ def pie_graph(pie_df, pie_str_column, pie_num_col, color_palette):
     fig.update_layout(
         title_font_size=28,
         autosize=False,
-        width=530,
-        height=400,
+        width=width_,
+        height=height_,
     )
 
     return fig
 
 
-def line_graph(line_df, line_x_column, line_y_column):
+def line_graph(line_df, line_x_column, line_y_column, height_, width_):
     import plotly.graph_objs as go
 
     # Crear los datos del gráfico
@@ -1632,8 +1632,8 @@ def line_graph(line_df, line_x_column, line_y_column):
         ),
         yaxis=dict(title=line_y_column),
         margin=dict(t=100),  # Establecer un margen superior de 100
-        height=400,  # Ajustar la altura del gráfico
-        width=530,  # Ajustar el ancho del gráfico
+        height=height_,  # Ajustar la altura del gráfico
+        width=width_,  # Ajustar el ancho del gráfico
     )
 
     # Verificar si la columna line_x_column tiene un tipo de datos entero (int)
@@ -1652,7 +1652,9 @@ def line_graph(line_df, line_x_column, line_y_column):
     return fig
 
 
-def line_graph_mult(line_df, line_x_column, line_y_column, line_color_column):
+def line_graph_mult(
+    line_df, line_x_column, line_y_column, line_color_column, height_, width_
+):
     import plotly.graph_objs as go
 
     # Crear los datos del gráfico
@@ -1686,8 +1688,8 @@ def line_graph_mult(line_df, line_x_column, line_y_column, line_color_column):
         xaxis=dict(title=line_x_column),
         yaxis=dict(title=line_y_column),
         margin=dict(t=100),  # Establecer un margen superior de 100
-        height=400,  # Ajustar la altura del gráfico
-        width=530,  # Ajustar el ancho del gráfico
+        height=height_,  # Ajustar la altura del gráfico
+        width=width_,  # Ajustar el ancho del gráfico
     )
 
     # Verificar si la columna line_x_column tiene un tipo de datos entero (int)

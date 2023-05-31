@@ -50,7 +50,7 @@ st.set_page_config(
     page_title="EDA",
     page_icon="📈",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
 
@@ -190,30 +190,37 @@ class EDA:
             # ).columns
             # # self.date_cols = self.date_cols.append(self.num_cols[-7:-1])
             # # self.num_cols = self.num_cols[0:-7]
+            st.write("---")
+
+            col1, col2, col3 = st.columns(3)
+
             self.str_list = list(self.obj_cols) + list(self.cat_cols)
             self.cat_list = list(self.cat_cols) + list(self.obj_cols)
             self.asce_list = [False, True]
-
-            with st.sidebar:
+            self.top = 10
+            self.orden = 1
+            self.height = 500
+            self.width = 800
+            with col1:
                 self.main_column = st.selectbox("Categorical column #1", self.str_list)
-
                 self.main_cat_col = st.selectbox("Categorical column #2", self.cat_cols)
+            with col2:
                 self.main_num_col = st.selectbox("Numeric column", self.num_cols)
                 self.main_date_col = st.selectbox("Datetime column", self.date_cols)
 
-                # formato_ship_date = determinar_formato_fecha(
-                #     self.df, self.main_date_col
-                # )
+            # formato_ship_date = determinar_formato_fecha(
+            #     self.df, self.main_date_col
+            # )
 
-                # transformar_columnas_datetime(self.df, self.main_date_col)
+            # transformar_columnas_datetime(self.df, self.main_date_col)
 
-                # st.write(formato_ship_date)
+            # st.write(formato_ship_date)
 
-                # self.main_date_col = pd.to_datetime(self.main_date_col)
+            # self.main_date_col = pd.to_datetime(self.main_date_col)
 
-                self.top = 10
-                self.orden = 1
-                # e el orden del dataframe", list(range(1, 7)))
+            # e el orden del dataframe", list(range(1, 7)))
+
+            with col3:
                 self.ascen = st.selectbox("Top/Last", [False, True])
                 self.ascend = "Top"
                 if self.ascen == True:
@@ -225,70 +232,68 @@ class EDA:
                     ["Emrld", "Turbo", "Inferno", "Plasma", "Magma", "Viridis"],
                     index=0,
                 )
-                self.height = 300
-                self.width = 10000
 
-                # self.ori = st.selectbox(
-                #     "Orientación del gráfico",
-                #     ["Vertical", "Horizontal"],
-                #     index=0,
-                # )
+            # self.ori = st.selectbox(
+            #     "Orientación del gráfico",
+            #     ["Vertical", "Horizontal"],
+            #     index=0,
+            # )
 
-                # if self.ori == "Vertical":
-                #     self.ori = "v"
-                # else:
-                #     self.ori = "h"
+            # if self.ori == "Vertical":
+            #     self.ori = "v"
+            # else:
+            #     self.ori = "h"
 
-                # Opciones de gráficas
-                # plot_options = {
-                #     "Gráfico de barras": barv_plotly,
-                #     "Gráfico tipo 2": plot_type2,
-                #     "Gráfico tipo 3": plot_type3,
-                # }
+            # Opciones de gráficas
+            # plot_options = {
+            #     "Gráfico de barras": barv_plotly,
+            #     "Gráfico tipo 2": plot_type2,
+            #     "Gráfico tipo 3": plot_type3,
+            # }
 
-                # # Barra lateral (sidebar)
-                # sidebar_selection = st.sidebar.selectbox(
-                #     "Seleccione el tipo de gráfico", list(plot_options.keys())
-                # )
+            # # Barra lateral (sidebar)
+            # sidebar_selection = st.sidebar.selectbox(
+            #     "Seleccione el tipo de gráfico", list(plot_options.keys())
+            # )
 
-                # # Ejecutar función según la opción seleccionada
-                # plot_options[sidebar_selection]()
+            # # Ejecutar función según la opción seleccionada
+            # plot_options[sidebar_selection]()
 
-                # Barra lateral (sidebar)
+            # Barra lateral (sidebar)
 
-                # self.df_top_c = top_df_final(
-                #     self.df,
-                #     self.main_column,
-                #     self.main_num_col,
-                #     self.main_cat_col,
-                #     self.ascen,
-                # )
+            # self.df_top_c = top_df_final(
+            #     self.df,
+            #     self.main_column,
+            #     self.main_num_col,
+            #     self.main_cat_col,
+            #     self.ascen,
+            # )
 
-                # with st.sidebar:
-                #     st.title("Seleccionar gráfico")
-                #     option = st.selectbox(
-                #         "Seleccione el tipo de gráfico",
-                #         ("Barra Vertical", "Gráfico de Pastel"),
-                #     )
-                #     barv_df = None  # Tu DataFrame de datos
-                #     pie_df = None  # Tu DataFrame de datos
+            # with st.sidebar:
+            #     st.title("Seleccionar gráfico")
+            #     option = st.selectbox(
+            #         "Seleccione el tipo de gráfico",
+            #         ("Barra Vertical", "Gráfico de Pastel"),
+            #     )
+            #     barv_df = None  # Tu DataFrame de datos
+            #     pie_df = None  # Tu DataFrame de datos
 
-                # if option == "Barra Vertical":
-                #     fig = barv_plotly(
-                #         self.df_top_c,
-                #         self.df_top_c.columns[0],  # Segunda columna
-                #         self.df_top_c.columns[1],  # Tercera columna
-                #         self.color,
-                #     )
+            # if option == "Barra Vertical":
+            #     fig = barv_plotly(
+            #         self.df_top_c,
+            #         self.df_top_c.columns[0],  # Segunda columna
+            #         self.df_top_c.columns[1],  # Tercera columna
+            #         self.color,
+            #     )
 
-                # elif option == "Gráfico de Pastel":
-                #     fig = pie_graph(
-                #         self.df_top_c,
-                #         self.df_top_c.columns[0],  # Segunda columna
-                #         self.df_top_c.columns[1],
-                #         self.color,
-                #     )
-
+            # elif option == "Gráfico de Pastel":
+            #     fig = pie_graph(
+            #         self.df_top_c,
+            #         self.df_top_c.columns[0],  # Segunda columna
+            #         self.df_top_c.columns[1],
+            #         self.color,
+            #     )
+            st.write("---")
             st.markdown(
                 "<p style='text-align: center; font-family: Georgia, serif;'>Filtrar by {}</p>".format(
                     self.main_date_col.replace("_", " ")
@@ -332,7 +337,7 @@ class EDA:
             self.df_top_d.sort_values(
                 self.main_num_col, ascending=self.ascen, inplace=True
             )
-
+            st.write("---")
             st.markdown(
                 "<p style='text-align: center; font-family: Georgia, serif;'>Filtrar by {}</p>".format(
                     self.main_num_col.replace("_", " ")
@@ -410,6 +415,8 @@ class EDA:
                 & (self.df_top_n[self.df_top_n.columns[1]] <= self.total_max)
             ]
 
+            st.write("---")
+
             self.col1, self.col2 = st.columns(2)
 
             # Contenido de la primera columna (col1)
@@ -418,12 +425,10 @@ class EDA:
                 #     "<h2 style='text-align: center;'>Análisis de Variables Categoricas</h2>",
                 #     unsafe_allow_html=True,
                 # )
-
-                with st.sidebar:
-                    option = st.selectbox(
-                        "Categorical graphic",
-                        ("Bar", "Pie"),
-                    )
+                option = st.selectbox(
+                    "Categorical graphic",
+                    ("Bar", "Pie"),
+                )
 
                 if option == "Bar":
                     fig = barv_plotly(
@@ -431,6 +436,8 @@ class EDA:
                         self.df_filtered_top_num.columns[0],  # Segunda columna
                         self.df_filtered_top_num.columns[1],  # Tercera columna
                         self.color,
+                        self.height,
+                        self.width,
                     )
                     st.plotly_chart(fig)
 
@@ -444,6 +451,8 @@ class EDA:
                         self.df_filtered_top_num.columns[0],  # Segunda columna
                         self.df_filtered_top_num.columns[1],
                         self.color,
+                        self.height,
+                        self.width,
                     )
 
                     st.plotly_chart(fig)
@@ -454,11 +463,10 @@ class EDA:
                 # )
 
             with self.col2:
-                with st.sidebar:
-                    option = st.selectbox(
-                        "Datetime graphic",
-                        ("Line", "Multiple-Line"),
-                    )
+                option = st.selectbox(
+                    "Datetime graphic",
+                    ("Line", "Multiple-Line"),
+                )
 
                 if option == "Line":
                     # self.df_top_l = top_df_simple(
@@ -471,6 +479,8 @@ class EDA:
                         self.df_filtered_top_date,
                         self.df_filtered_top_date.columns[0],
                         self.df_filtered_top_date.columns[1],
+                        self.height,
+                        self.width,
                     )
                     # fig = barv_plotly(
                     #     self.df_top_c,
@@ -493,9 +503,13 @@ class EDA:
                         self.df_top_d.columns[1],
                         self.df_top_d.columns[2],
                         self.df_top_d.columns[0],
+                        self.height,
+                        self.width,
                     )
 
                     st.plotly_chart(fig)
+
+            st.write("---")
 
             self.df_filtered = self.total_df[
                 (self.total_df[self.main_num_col] >= self.total_min)
