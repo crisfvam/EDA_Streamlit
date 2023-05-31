@@ -200,9 +200,9 @@ class EDA:
             self.top = 10
             self.orden = 1
             self.height_one = 400
-            self.width_one = 800
+            self.width_one = 750
             self.height_two = 400
-            self.width_two = 800
+            self.width_two = 750
 
             with col1:
                 self.main_column = st.selectbox("Categorical column #1", self.str_list)
