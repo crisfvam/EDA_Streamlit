@@ -38,13 +38,23 @@ def determinar_formato_fecha(df, columna):
     return formato_mas_comun
 
 
+# def transformar_columnas_datetime(df):
+#     for columna in df.select_dtypes(include=["datetime64"]).columns.to_list():
+#         try:
+#             df[columna] = pd.to_datetime(
+#                 df[columna], format="%d/%m/%Y", errors="coerce"
+#             )
+#         except:
+#             pass
+#     return df
+
+
 def transformar_columnas_datetime(df):
     for columna in df.select_dtypes(include=["datetime64"]).columns.to_list():
         try:
             df[columna] = pd.to_datetime(
-                df[columna], format="%Y-%m-%d %H:%M:%S"
-            ).dt.strftime("%d-%m-%Y")
-
+                df[columna], format="%Y-%m-%d %H:%M:%S", errors="coerce"
+            ).dt.strftime("%d/%m/%Y")
         except:
             pass
     return df
@@ -1620,7 +1630,6 @@ def line_graph(line_df, line_x_column, line_y_column):
             xanchor="center",
             font=dict(size=25, family="Arial"),
         ),
-        xaxis=dict(title=line_x_column),
         yaxis=dict(title=line_y_column),
         margin=dict(t=100),  # Establecer un margen superior de 100
         height=400,  # Ajustar la altura del gráfico
