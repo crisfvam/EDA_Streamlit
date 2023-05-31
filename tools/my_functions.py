@@ -1474,7 +1474,7 @@ def barv_plotly(barv_df, barv_str_column, barv_num_col, color_v):
         yaxis=dict(showticklabels=False),  # Quitar los valores numéricos del eje y
         margin=dict(t=100),  # Establecer un margen superior de 100
         height=400,  # Ajustar la altura del gráfico
-        width=550,  # Ajustar el ancho del gráfico
+        width=530,  # Ajustar el ancho del gráfico
     )
 
     # Crear la figura
@@ -1601,7 +1601,7 @@ def pie_graph(pie_df, pie_str_column, pie_num_col, color_palette):
     fig.update_layout(
         title_font_size=28,
         autosize=False,
-        width=500,
+        width=530,
         height=400,
     )
 
@@ -1633,7 +1633,7 @@ def line_graph(line_df, line_x_column, line_y_column):
         yaxis=dict(title=line_y_column),
         margin=dict(t=100),  # Establecer un margen superior de 100
         height=400,  # Ajustar la altura del gráfico
-        width=550,  # Ajustar el ancho del gráfico
+        width=530,  # Ajustar el ancho del gráfico
     )
 
     # Verificar si la columna line_x_column tiene un tipo de datos entero (int)
@@ -1687,7 +1687,7 @@ def line_graph_mult(line_df, line_x_column, line_y_column, line_color_column):
         yaxis=dict(title=line_y_column),
         margin=dict(t=100),  # Establecer un margen superior de 100
         height=400,  # Ajustar la altura del gráfico
-        width=500,  # Ajustar el ancho del gráfico
+        width=530,  # Ajustar el ancho del gráfico
     )
 
     # Verificar si la columna line_x_column tiene un tipo de datos entero (int)
