@@ -199,8 +199,8 @@ class EDA:
             self.asce_list = [False, True]
             self.top = 10
             self.orden = 1
-            self.height = 500
-            self.width = 750
+            self.height = 400
+            self.width = 730
             with col1:
                 self.main_column = st.selectbox("Categorical column #1", self.str_list)
                 self.main_cat_col = st.selectbox("Categorical column #2", self.cat_cols)
