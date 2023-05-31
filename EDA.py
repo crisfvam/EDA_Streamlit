@@ -44,22 +44,6 @@ from tools.my_functions import (
     line_graph_mult,
 )
 
-import warnings
-
-# ...
-
-# Antes de llamar a la función que produce la advertencia
-warnings.filterwarnings(
-    "ignore", message="Parsing dates in DD/MM/YYYY format when dayfirst=False"
-)
-
-# Llamar a la función que produce la advertencia
-# ...
-
-# Después de llamar a la función que produce la advertencia
-warnings.filterwarnings(
-    "default", message="Parsing dates in DD/MM/YYYY format when dayfirst=False"
-)
 
 pd.options.display.max_columns = None
 st.set_page_config(
