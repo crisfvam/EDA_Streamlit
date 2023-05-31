@@ -30,6 +30,21 @@ def load_data(file, separator):
     return dataset
 
 
+def determinar_formato_fecha(df, columna):
+    formatos = pd.to_datetime(df[columna], infer_datetime_format=True).dt.strftime(
+        "%Y-%m-%d %H:%M:%S"
+    )
+    formato_mas_comun = formatos.value_counts().idxmax()
+    return formato_mas_comun
+
+
+def transformar_columnas_datetime(df, columna):
+    df[columna] = pd.to_datetime(df[columna], format="%Y-%m-%d %H:%M:%S").dt.strftime(
+        "%d-%m-%Y"
+    )
+    return df
+
+
 def clean_column_names(df):
     # Obtener los nombres de las columnas actuales
     column_names = df.columns.tolist()
@@ -115,6 +130,13 @@ def modify_data_types(df, categories_number=150):
                 if df[col].nunique() < categories_number:
                     df[col] = df[col].astype("category")
 
+        elif df[col].dtype == "datetime64":
+            try:
+                df[col] = pd.to_datetime(
+                    df[col], format="%Y-%m-%d %H:%M:%S"
+                ).dt.strftime("%d-%m-%Y")
+            except:
+                pass
     return df
 
 

@@ -206,6 +206,16 @@ class EDA:
                         "Seleccione la variable fecha", self.date_cols
                     )
 
+                    # formato_ship_date = determinar_formato_fecha(
+                    #     self.df, self.main_date_col
+                    # )
+
+                    # transformar_columnas_datetime(self.df, self.main_date_col)
+
+                    # st.write(formato_ship_date)
+
+                    # self.main_date_col = pd.to_datetime(self.main_date_col)
+
                     self.top = 10
                     self.orden = 1
                     # e el orden del dataframe", list(range(1, 7)))
@@ -305,7 +315,7 @@ class EDA:
                         )
 
                         fig = barv_plotly(
-                            self.df_top_s.head(10),
+                            self.df_top_s.head(15),
                             self.df_top_s.columns[0],  # Segunda columna
                             self.df_top_s.columns[1],  # Tercera columna
                             self.color,
@@ -388,15 +398,135 @@ class EDA:
 
                         st.plotly_chart(fig)
 
-                # self.main_column_list = st.selectbox(
-                #     "Selection " + self.main_column.replace("_", " "),
-                #     list(self.df[self.main_column].unique()),
+                column1, column2, column3, column4 = st.columns(4)
+
+                with column1:
+                    st.markdown(
+                        "<p style='text-align: center; font-family: Georgia, serif;'>Filtrar por total {}</p>".format(
+                            self.main_num_col
+                        ),
+                        unsafe_allow_html=True,
+                    )
+
+                    self.total_df = self.df.groupby(self.main_column, as_index=False)[
+                        self.main_num_col
+                    ].sum()
+
+                    self.total_df_date = self.df.groupby(
+                        [self.main_column, self.main_date_col], as_index=False
+                    )[self.main_num_col].sum()
+
+                    self.total_min = self.total_df[self.main_num_col].min()
+                    self.total_max = self.total_df[self.main_num_col].max()
+
+                    self.total_min = st.number_input(
+                        "Valor mínimo", value=self.total_min, step=1
+                    )
+
+                    self.total_max = st.number_input(
+                        "Valor máximo", value=self.total_max, step=1
+                    )
+
+                    st.markdown("Filtrar por " + self.main_date_col)
+                    self.fecha_min, self.fecha_max = st.select_slider(
+                        " ",
+                        options=self.df[self.main_date_col].sort_values().unique(),
+                        value=(
+                            self.df[self.main_date_col].min(),
+                            self.df[self.main_date_col].max(),
+                        ),
+                    )
+
+                    self.df_filtered = self.total_df[
+                        (self.total_df[self.main_num_col] >= self.total_min)
+                        & (self.total_df[self.main_num_col] <= self.total_max)
+                    ]
+
+                    self.df_filtered = self.df_filtered.sort_values(
+                        by=self.main_num_col, ascending=False
+                    )
+
+                    unique_categoricas = (
+                        self.df_filtered[[self.main_column, self.main_num_col]]
+                        .drop_duplicates()
+                        .reset_index(drop=True)
+                    )
+                    st.markdown(
+                        "<p style='text-align: center; font-family: Arial;'>{} results found</p>".format(
+                            len(unique_categoricas)
+                        ),
+                        unsafe_allow_html=True,
+                    )
+                    st.dataframe(unique_categoricas)
+
+                    st.dataframe(self.total_df_date)
+
+                with column2:
+                    st.write("Columna 2")
+
+                with column3:
+                    st.write("Columna 3")
+
+                with column4:
+                    st.write("Columna 4")
+
+                self.main_column_list = st.selectbox(
+                    "Selection " + self.main_column.replace("_", " "),
+                    list(self.df[self.main_column].unique()),
+                )
+
+                self.main_cat_col_list = st.selectbox(
+                    "Selection " + self.main_cat_col.replace("_", " "),
+                    list(self.df[self.main_cat_col].unique()),
+                )
+
+                # st.subheader("Filtrar por " + self.main_num_col)
+                # self.precio_min, self.precio_max = st.select_slider(
+                #     "Rango de " + self.main_num_col,
+                #     options=self.df[self.main_num_col].sort_values().unique(),
+                #     value=(
+                #         self.df[self.main_num_col].min(),
+                #         self.df[self.main_num_col].max(),
+                #     ),
                 # )
 
-                # self.main_cat_col_list = st.selectbox(
-                #     "Selection " + self.main_cat_col.replace("_", " "),
-                #     list(self.df[self.main_cat_col].unique()),
+                # st.subheader("Filtrar por promedio de " + self.main_num_col)
+                # avg_df = self.df.groupby(self.main_obj_col)[self.main_num_col].mean()
+                # avg_min = avg_df.min()
+                # avg_max = avg_df.max()
+
+                # avg_min, avg_max = st.select_slider(
+                #     "Rango de promedio " + self.main_num_col,
+                #     options=sorted(avg_df.unique()),
+                #     value=(avg_min, avg_max),
                 # )
+
+                # st.subheader("Filtrar por" + self.main_date_col)
+                # self.fecha_min, self.fecha_max = st.select_slider(
+                #     "Rango de " + self.main_date_col,
+                #     options=self.df[self.main_date_col].sort_values().unique(),
+                #     value=(
+                #         self.df[self.main_date_col].min(),
+                #         self.df[self.main_date_col].max(),
+                #     ),
+                # )
+
+                # self.df_filtered = self.df[
+                #     (self.df[self.main_num_col] >= self.precio_min)
+                #     & (self.df[self.main_num_col] <= self.precio_max)
+                #     & (self.df[self.main_date_col] >= self.fecha_min)
+                #     & (self.df[self.main_date_col] <= self.fecha_max)
+                # ]
+
+                # st.write("Listado de Object que cumplen el filtro de precio y fecha:")
+                # unique_objects = (
+                #     self.df_filtered[self.main_column]
+                #     .drop_duplicates()
+                #     .reset_index(drop=True)
+                # )
+                # df_objects = pd.DataFrame(unique_objects, columns=[self.main_column])
+                # st.write(df_objects)
+                # st.write(f"Longitud de la lista: {len(unique_objects)}")
 
                 # self.filtered_df = self.df[
                 #     (self.df[self.main_column] == self.main_column_list)
@@ -436,34 +566,169 @@ class EDA:
                 # ] = self.filtered_df[self.main_num_col].max()
                 # st.dataframe(self.filtered_df)
 
-                self.main_column_list = st.selectbox(
-                    "Selection " + self.main_column.replace("_", " "),
-                    list(self.df[self.main_column].unique()),
-                )
+                # self.filt_df = (
+                #     (self.df[self.df[self.main_column] == self.main_column_list])
+                #     .describe()
+                #     .round(2)
+                #     .T
+                # )
+                #     .groupby(self.main_column, as_index=False)
+                #     .agg(
+                #         Total=(self.main_num_col, "sum"),
+                #         Mean=(self.main_num_col, "mean"),
+                #         Min=(self.main_num_col, "min"),
+                #         Max=(self.main_num_col, "max"),
+                #     )
+                #     .sort_values(by="Total", ascending=False)
+                #     .head(1)
+                # )
 
-                self.main_cat_col_list = st.selectbox(
-                    "Selection " + self.main_cat_col.replace("_", " "),
-                    list(self.df[self.main_cat_col].unique()),
-                )
+                # # Cambiar los nombres de las columnas
+                # self.filt_df.columns = [
+                #     self.main_column,
+                #     "Total_" + self.main_num_col,
+                #     "Mean_" + self.main_num_col,
+                #     "Min_" + self.main_num_col,
+                #     "Max_" + self.main_num_col,
+                # ]
 
-                self.filtered_df = (
-                    self.df[
-                        (self.df[self.main_column] == self.main_column_list)
-                        & (self.df[self.main_cat_col] == self.main_cat_col_list)
-                    ]
-                    .agg({self.main_num_col: ["sum", "mean", "min", "max"]})
-                    .T
-                )
+                # self.filt_df[
+                #     self.main_cat_col
+                #     + "_with_most_"
+                #     + self.main_num_col
+                #     + "_of_the_"
+                #     + self.main_column.split("_")[0]
+                # ] = [
+                #     self.df.loc[self.df[self.main_column] == self.main_column_list]
+                #     .groupby([self.main_column, self.main_cat_col], as_index=False)[
+                #         self.main_num_col
+                #     ]
+                #     .sum()
+                #     .sort_values(by=self.main_num_col, ascending=False)[
+                #         self.main_cat_col
+                #     ]
+                #     .iloc[0]
+                # ]
 
-                # Renombrar las columnas del DataFrame resultante
-                self.filtered_df.columns = [
-                    "Total",
-                    "Mean",
-                    "Min",
-                    "Max",
-                ]
+                # self.filt_df[
+                #     "total_"
+                #     + self.main_num_col
+                #     + "_of_this_"
+                #     + self.main_cat_col
+                #     + "_by_"
+                #     + self.main_column.split("_")[0]
+                # ] = [
+                #     self.df.loc[self.df[self.main_column] == self.main_column_list]
+                #     .groupby([self.main_column, self.main_cat_col], as_index=False)[
+                #         self.main_num_col
+                #     ]
+                #     .sum()
+                #     .sort_values(by=self.main_num_col, ascending=False)[
+                #         self.main_num_col
+                #     ]
+                #     .iloc[0]
+                # ]
 
-                st.dataframe(self.filtered_df)
+                # self.filt_df[
+                #     "mean_"
+                #     + self.main_num_col
+                #     + "_of_this_"
+                #     + self.main_cat_col
+                #     + "_by_"
+                #     + self.main_column.split("_")[0]
+                # ] = [
+                #     self.df.loc[self.df[self.main_column] == self.main_column_list]
+                #     .groupby([self.main_column, self.main_cat_col], as_index=False)[
+                #         self.main_num_col
+                #     ]
+                #     .mean()
+                #     .round(2)
+                #     .sort_values(by=self.main_num_col, ascending=False)[
+                #         self.main_num_col
+                #     ]
+                #     .iloc[0]
+                # ]
+
+                # self.filt_df[
+                #     "min_"
+                #     + self.main_num_col
+                #     + "_of_this_"
+                #     + self.main_cat_col
+                #     + "_by_"
+                #     + self.main_column.split("_")[0]
+                # ] = [
+                #     self.df.loc[self.df[self.main_column] == self.main_column_list]
+                #     .groupby([self.main_column, self.main_cat_col], as_index=False)[
+                #         self.main_num_col
+                #     ]
+                #     .min()
+                #     .sort_values(by=self.main_num_col, ascending=False)[
+                #         self.main_num_col
+                #     ]
+                #     .iloc[0]
+                # ]
+
+                # self.filt_df[
+                #     "max_"
+                #     + self.main_num_col
+                #     + "_of_this_"
+                #     + self.main_cat_col
+                #     + "_by_"
+                #     + self.main_column.split("_")[0]
+                # ] = [
+                #     self.df.loc[self.df[self.main_column] == self.main_column_list]
+                #     .groupby([self.main_column, self.main_cat_col], as_index=False)[
+                #         self.main_num_col
+                #     ]
+                #     .max()
+                #     .sort_values(by=self.main_num_col, ascending=False)[
+                #         self.main_num_col
+                #     ]
+                #     .iloc[0]
+                # ]
+
+                # self.filt_df = self.filt_df.T
+
+                # self.filt_df.columns = [""]
+
+                # st.markdown(
+                #     "<h3 style='text-align: center;'>Consultas individuales dos categorias</h3>",
+                #     unsafe_allow_html=True,
+                # )
+
+                # self.filtered_df = (
+                #     self.df[
+                #         (self.df[self.main_column] == self.main_column_list)
+                #         & (self.df[self.main_cat_col] == self.main_cat_col_list)
+                #     ]
+                #     .agg(
+                #         {
+                #             self.main_num_col: [
+                #                 "sum",
+                #                 ("mean", lambda x: round(x, 2)),
+                #                 "min",
+                #                 "max",
+                #             ]
+                #         }
+                #     )
+                #     .T
+                # )
+
+                # # Renombrar las columnas del DataFrame resultante
+                # self.filtered_df.columns = [
+                #     "Total",
+                #     "Mean",
+                #     "Min",
+                #     "Max",
+                # ]
+
+                # st.dataframe(self.filt_df)
+                # st.dataframe(self.filtered_df)
+
+                # self.col1, self.col2 = st.columns(2)
+                # with self.col1:
+
+                # with self.col2:
 
     def run(self, url):
         self.url = url
