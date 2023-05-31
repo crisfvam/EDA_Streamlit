@@ -1630,7 +1630,6 @@ def line_graph(line_df, line_x_column, line_y_column, height_, width_):
             xanchor="center",
             font=dict(size=25, family="Arial"),
         ),
-        yaxis=dict(title=line_y_column),
         margin=dict(t=100),  # Establecer un margen superior de 100
         height=height_,  # Ajustar la altura del gráfico
         width=width_,  # Ajustar el ancho del gráfico
@@ -1686,7 +1685,6 @@ def line_graph_mult(
             font=dict(size=25, family="Arial"),
         ),
         xaxis=dict(title=line_x_column),
-        yaxis=dict(title=line_y_column),
         margin=dict(t=100),  # Establecer un margen superior de 100
         height=height_,  # Ajustar la altura del gráfico
         width=width_,  # Ajustar el ancho del gráfico
