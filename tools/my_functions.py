@@ -38,10 +38,15 @@ def determinar_formato_fecha(df, columna):
     return formato_mas_comun
 
 
-def transformar_columnas_datetime(df, columna):
-    df[columna] = pd.to_datetime(df[columna], format="%Y-%m-%d %H:%M:%S").dt.strftime(
-        "%d-%m-%Y"
-    )
+def transformar_columnas_datetime(df):
+    for columna in df.select_dtypes(include=["datetime64"]).columns.to_list():
+        try:
+            df[columna] = pd.to_datetime(
+                df[columna], format="%Y-%m-%d %H:%M:%S"
+            ).dt.strftime("%d-%m-%Y")
+
+        except:
+            pass
     return df
 
 
@@ -130,13 +135,18 @@ def modify_data_types(df, categories_number=150):
                 if df[col].nunique() < categories_number:
                     df[col] = df[col].astype("category")
 
-        elif df[col].dtype == "datetime64":
-            try:
-                df[col] = pd.to_datetime(
-                    df[col], format="%Y-%m-%d %H:%M:%S"
-                ).dt.strftime("%d-%m-%Y")
-            except:
-                pass
+    # for columna in df.select_dtypes(include=["datetime64"]).columns.to_list():
+    #     try:
+    #         formatos = pd.to_datetime(
+    #             df[columna], infer_datetime_format=True
+    #         ).dt.strftime("%Y-%m-%d %H:%M:%S")
+    #         formato_mas_comun = formatos.value_counts().idxmax()
+
+    #         df[columna] = pd.to_datetime(
+    #             df[columna], format=formato_mas_comun
+    #         ).dt.strftime("%d-%m-%Y")
+    #     except:
+    #         pass
     return df
 
 
@@ -343,7 +353,7 @@ def date_columns(df):
     datetime_columns = df.select_dtypes(include=["datetime64"]).columns.tolist()
 
     for column_name in datetime_columns:
-        df[column_name] = pd.to_datetime(df[column_name])  # convert column in datetime
+        # df[column_name] = pd.to_datetime(df[column_name])  # convert column in datetime
         df.set_index(column_name, inplace=True)
         df["year_" + column_name] = df.index.year
         df["month_" + column_name] = df.index.month
