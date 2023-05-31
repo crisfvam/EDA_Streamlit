@@ -199,8 +199,11 @@ class EDA:
             self.asce_list = [False, True]
             self.top = 10
             self.orden = 1
-            self.height = 400
-            self.width = 700
+            self.height_one = 400
+            self.width_one = 730
+            self.height_two = 400
+            self.width_two = 850
+
             with col1:
                 self.main_column = st.selectbox("Categorical column #1", self.str_list)
                 self.main_cat_col = st.selectbox("Categorical column #2", self.cat_cols)
@@ -436,8 +439,8 @@ class EDA:
                         self.df_filtered_top_num.columns[0],  # Segunda columna
                         self.df_filtered_top_num.columns[1],  # Tercera columna
                         self.color,
-                        self.height,
-                        self.width,
+                        self.height_one,
+                        self.width_one,
                     )
                     st.plotly_chart(fig)
 
@@ -451,8 +454,8 @@ class EDA:
                         self.df_filtered_top_num.columns[0],  # Segunda columna
                         self.df_filtered_top_num.columns[1],
                         self.color,
-                        self.height,
-                        self.width,
+                        self.height_one,
+                        self.width_one,
                     )
 
                     st.plotly_chart(fig)
@@ -479,8 +482,8 @@ class EDA:
                         self.df_filtered_top_date,
                         self.df_filtered_top_date.columns[0],
                         self.df_filtered_top_date.columns[1],
-                        self.height,
-                        self.width,
+                        self.height_two,
+                        self.width_two,
                     )
                     # fig = barv_plotly(
                     #     self.df_top_c,
@@ -503,8 +506,8 @@ class EDA:
                         self.df_top_d.columns[1],
                         self.df_top_d.columns[2],
                         self.df_top_d.columns[0],
-                        self.height,
-                        self.width,
+                        self.height_two,
+                        self.width_two,
                     )
 
                     st.plotly_chart(fig)
