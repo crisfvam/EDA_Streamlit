@@ -1474,7 +1474,7 @@ def barv_plotly(barv_df, barv_str_column, barv_num_col, color_v):
         yaxis=dict(showticklabels=False),  # Quitar los valores numéricos del eje y
         margin=dict(t=100),  # Establecer un margen superior de 100
         height=400,  # Ajustar la altura del gráfico
-        width=530,  # Ajustar el ancho del gráfico
+        width=510,  # Ajustar el ancho del gráfico
     )
 
     # Crear la figura
