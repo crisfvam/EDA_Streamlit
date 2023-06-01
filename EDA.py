@@ -845,9 +845,9 @@ class EDA:
                 self.df_query_filt = self.df_query[
                     (self.df_query[self.main_column] == self.selected_main_column)
                     & (self.df_query[self.main_cat_col] == self.selected_main_cat_col)
-                ].T
+                ]
 
-                self.df_query_filt.columns = [" Query # 3"]
+                # self.df_query_filt.columns = [" Query # 3"]
 
                 st.dataframe(self.df_query_filt)
 
