@@ -190,9 +190,9 @@ class EDA:
             # ).columns
             # # self.date_cols = self.date_cols.append(self.num_cols[-7:-1])
             # # self.num_cols = self.num_cols[0:-7]
-            st.write("---")
+            # st.write("---")
 
-            col1, col2, col3 = st.columns(3)
+            col1, col2, col3, col4, col5, col6 = st.columns(6)
 
             self.str_list = list(self.obj_cols) + list(self.cat_cols)
             self.cat_list = list(self.cat_cols) + list(self.obj_cols)
@@ -206,9 +206,11 @@ class EDA:
 
             with col1:
                 self.main_column = st.selectbox("Categorical column #1", self.str_list)
-                self.main_cat_col = st.selectbox("Categorical column #2", self.cat_cols)
             with col2:
+                self.main_cat_col = st.selectbox("Categorical column #2", self.cat_cols)
+            with col3:
                 self.main_num_col = st.selectbox("Numeric column", self.num_cols)
+            with col4:
                 self.main_date_col = st.selectbox("Datetime column", self.date_cols)
 
             # formato_ship_date = determinar_formato_fecha(
@@ -223,13 +225,14 @@ class EDA:
 
             # e el orden del dataframe", list(range(1, 7)))
 
-            with col3:
+            with col5:
                 self.ascen = st.selectbox("Top/Last", [False, True])
                 self.ascend = "Top"
                 if self.ascen == True:
                     self.ascend = "Last"
 
                 self.size_title = 2
+            with col6:
                 self.color = st.selectbox(
                     " Categorical graphic color",
                     ["Emrld", "Turbo", "Inferno", "Plasma", "Magma", "Viridis"],
@@ -296,7 +299,7 @@ class EDA:
             #         self.df_top_c.columns[1],
             #         self.color,
             #     )
-            st.write("---")
+            # st.write("---")
             st.markdown(
                 "<p style='text-align: center; font-family: Georgia, serif;'>Filtrar by {}</p>".format(
                     self.main_date_col.replace("_", " ")
@@ -318,6 +321,9 @@ class EDA:
                 self.main_num_col,
                 self.ascen,
             )
+            self.df_top_l = self.df_top_l.sort_values(
+                self.df_top_l.columns[0], ascending=False
+            )
 
             self.df_filtered_top_date = self.df_top_l[
                 (self.df_top_l[self.df_top_l.columns[0]] >= self.fecha_min)
@@ -337,10 +343,8 @@ class EDA:
                 .sum()
             )
 
-            self.df_top_d.sort_values(
-                self.main_num_col, ascending=self.ascen, inplace=True
-            )
-            st.write("---")
+            self.df_top_d.sort_values(self.main_date_col, ascending=False)
+            # st.write("---")
             st.markdown(
                 "<p style='text-align: center; font-family: Georgia, serif;'>Filtrar by {}</p>".format(
                     self.main_num_col.replace("_", " ")
@@ -356,25 +360,6 @@ class EDA:
                 [self.main_column, self.main_date_col], as_index=False
             )[self.main_num_col].sum()
 
-            col1, col2 = st.columns(2)
-
-            with col1:
-                self.total_min = self.total_df[self.main_num_col].min()
-
-                self.total_min = st.number_input("Mínimun Total", value=0, step=1)
-            with col2:
-                self.total_max = self.total_df[self.main_num_col].max()
-                self.total_max = st.number_input(
-                    "Maximun Total", value=self.total_max, step=1
-                )
-
-            # st.markdown(
-            #     "<p style='text-align: center; font-family: Georgia, serif;'>Filtrar por media {}</p>".format(
-            #         self.main_num_col.replace("_", " ")
-            #     ),
-            #     unsafe_allow_html=True,
-            # )
-
             self.mean_df = (
                 self.df.groupby(self.main_column, as_index=False)[self.main_num_col]
                 .mean()
@@ -389,17 +374,33 @@ class EDA:
                 .round(1)
             )
 
-            col1, col2 = st.columns(2)
+            col1, col2, col3, col4 = st.columns(4)
 
             with col1:
+                self.total_min = self.total_df[self.main_num_col].min()
+                self.total_min = st.number_input("Mínimun Total", value=0, step=1)
+            with col3:
                 self.mean_min = self.mean_df[self.main_num_col].min()
-
                 self.mean_min = st.number_input("Mínimun Mean", value=0, step=1)
+
             with col2:
+                self.total_max = self.total_df[self.main_num_col].max()
+                self.total_max = st.number_input(
+                    "Maximun Total", value=self.total_max, step=1
+                )
+            with col4:
                 self.mean_max = self.mean_df[self.main_num_col].max()
                 self.mean_max = st.number_input(
                     "Maximun Mean", value=self.mean_max, step=1.0
                 )
+
+            # st.markdown(
+            #     "<p style='text-align: center; font-family: Georgia, serif;'>Filtrar por media {}</p>".format(
+            #         self.main_num_col.replace("_", " ")
+            #     ),
+            #     unsafe_allow_html=True,
+            # )
+
             # self.mean_min, self.mean_max = st.select_slider(
             #     " ",
             #     options=self.mean_df[self.main_num_col].sort_values().unique(),
@@ -430,7 +431,7 @@ class EDA:
                 # )
                 option = st.selectbox(
                     "Categorical graphic",
-                    ("Bar", "Pie"),
+                    ("Bar", "Pie", "Stacked Bars"),
                 )
 
                 if option == "Bar":
@@ -456,6 +457,20 @@ class EDA:
                         self.color,
                         self.height_one,
                         self.width_one,
+                    )
+
+                    st.plotly_chart(fig)
+
+                elif option == "Stacked Bars":
+                    st.dataframe(self.df_top_n)
+
+                    fig = sec_bar_mdf(
+                        self.df_top_d,
+                        self.df_top_d.columns[1],
+                        self.df_top_d.columns[2],
+                        self.df_top_d.columns[0],
+                        self.height_two,
+                        self.width_two,
                     )
 
                     st.plotly_chart(fig)
@@ -537,23 +552,22 @@ class EDA:
             unique_categoricas_tot = (
                 self.df_filtered[[self.main_column, self.main_num_col]]
                 .drop_duplicates()
-                .reset_index(drop=True)
+                .set_index([self.main_column])
             )
 
-            unique_categoricas_tot.columns = [self.main_column, "total"]
+            unique_categoricas_tot.columns = ["total"]
 
             unique_categoricas_date_tot = (
                 self.df_filtered_date[
                     [self.main_column, self.main_num_col, self.main_date_col]
                 ]
                 .drop_duplicates()
-                .reset_index(drop=True)
+                .set_index(self.main_date_col)
             )
 
             unique_categoricas_date_tot.columns = [
                 self.main_column,
                 "total",
-                self.main_date_col,
             ]
 
             self.df_filtered = self.mean_df[
@@ -579,25 +593,24 @@ class EDA:
             unique_categoricas = (
                 self.df_filtered[[self.main_column, self.main_num_col]]
                 .drop_duplicates()
-                .reset_index(drop=True)
+                .set_index([self.main_column])
             )
 
-            unique_categoricas.columns = [self.main_column, "mean"]
+            unique_categoricas.columns = ["mean"]
 
             # unique_categoricas.columns = [self.main_column, "mean"]
 
             unique_categoricas_date = (
                 self.df_filtered_date[
-                    [self.main_column, self.main_num_col, self.main_date_col]
+                    [self.main_date_col, self.main_column, self.main_num_col]
                 ]
                 .drop_duplicates()
-                .reset_index(drop=True)
+                .set_index(self.main_date_col)
             )
 
             unique_categoricas_date.columns = [
                 self.main_column,
                 "mean",
-                self.main_date_col,
             ]
 
             # unique_categoricas_date = [
@@ -614,14 +627,9 @@ class EDA:
                 # colu1, colu2 = st.columns(2)
                 # with colu1:
                 st.markdown(
-                    "<p style='text-align: center; font-family: Arial;'>{} total</p>".format(
+                    "<p style= font-family: Arial;'>{} total : {} results </p>".format(
                         self.main_num_col.replace("_", " ").capitalize(),
-                    ),
-                    unsafe_allow_html=True,
-                )
-                st.markdown(
-                    "<p style='text-align: center; font-family: Arial;'>{} results found</p>".format(
-                        len(unique_categoricas_tot)
+                        len(unique_categoricas_tot),
                     ),
                     unsafe_allow_html=True,
                 )
@@ -630,109 +638,115 @@ class EDA:
             with col3:
                 # with colu2:
                 st.markdown(
-                    "<p style='text-align: center; font-family: Arial;'>{} mean</p>".format(
+                    "<p style= font-family: Arial;'>{} mean : {} results</p>".format(
                         self.main_num_col.replace("_", " ").capitalize(),
+                        len(unique_categoricas),
                     ),
                     unsafe_allow_html=True,
                 )
-                st.markdown(
-                    "<p style='text-align: center; font-family: Arial;'>{} results</p>".format(
-                        len(unique_categoricas)
-                    ),
-                    unsafe_allow_html=True,
-                )
+
                 st.dataframe(unique_categoricas)
 
             with col2:
                 # colu1, colu2 = st.columns(2)
                 # with colu1:
                 st.markdown(
-                    "<p style='text-align: center; font-family: Arial;'>{} total by {}</p>".format(
+                    "<p style= font-family: Arial;'>{} total by {} : {} results</p>".format(
                         self.main_num_col.replace("_", " ").capitalize(),
                         self.main_date_col.replace("_", " "),
+                        len(unique_categoricas_date_tot),
                     ),
                     unsafe_allow_html=True,
                 )
-                st.markdown(
-                    "<p style='text-align: center; font-family: Arial;'>{} results</p>".format(
-                        len(unique_categoricas_date_tot)
-                    ),
-                    unsafe_allow_html=True,
-                )
+                # st.markdown(
+                #     "<p style='text-align: center; font-family: Arial;'>{} results</p>".format(
+
+                #     ),
+                #     unsafe_allow_html=True,
+                # )
 
                 st.dataframe(unique_categoricas_date_tot)
 
             with col4:
                 st.markdown(
-                    "<p style='text-align: center; font-family: Arial;'>{} mean by {}</p>".format(
+                    "<p style= font-family: Arial;'>{} mean by {} : {} results </p>".format(
                         self.main_num_col.replace("_", " ").capitalize(),
                         self.main_date_col.replace("_", " "),
+                        len(unique_categoricas_date),
                     ),
                     unsafe_allow_html=True,
                 )
 
-                st.markdown(
-                    "<p style='text-align: center; font-family: Arial;'>{} results</p>".format(
-                        len(unique_categoricas_date)
-                    ),
-                    unsafe_allow_html=True,
-                )
                 st.dataframe(unique_categoricas_date)
             with col5:
                 st.markdown(
-                    "<p style='text-align: center; font-family: Arial;'>Advanced queries of {} and {}</p>".format(
+                    "<p style= font-family: Arial;'>Query of {} and {}</p>".format(
                         self.main_column.replace("_", " ").capitalize(),
                         self.main_cat_col.replace("_", " "),
                     ),
                     unsafe_allow_html=True,
                 )
-                self.unique_main_column_values = self.df[self.main_column].unique()
-                self.selected_main_column = st.selectbox(
-                    self.main_column.replace("_", " ").capitalize(),
-                    self.unique_main_column_values,
+
+                col1, col2 = st.columns(2)
+                with col1:
+                    self.unique_main_column_values = self.df[self.main_column].unique()
+                    self.selected_main_column = st.selectbox(
+                        self.main_column.replace("_", " ").capitalize(),
+                        self.unique_main_column_values,
+                    )
+                with col2:
+                    self.unique_main_cat_col_values = self.df[
+                        self.main_cat_col
+                    ].unique()
+                    self.selected_main_cat_col = st.selectbox(
+                        self.main_cat_col.replace("_", " ").capitalize(),
+                        self.unique_main_cat_col_values,
+                    )
+
+                self.df_obj = (
+                    self.df.groupby(self.main_column, as_index=False)[self.main_num_col]
+                    .agg(["sum", "mean", "max", "min"])
+                    .round(1)
                 )
 
-                self.unique_main_cat_col_values = self.df[self.main_cat_col].unique()
-                self.selected_main_cat_col = st.selectbox(
-                    self.main_cat_col.replace("_", " ").capitalize(),
-                    self.unique_main_cat_col_values,
+                self.df_obj.columns = ["total", "mean", "min", "max"]
+                self.df_obj = self.df_obj.reset_index()
+
+                self.df_obj_filt = self.df_obj[
+                    (self.df_obj[self.main_column] == self.selected_main_column)
+                ].T
+
+                self.df_obj_filt.columns = ["Query #1"]
+
+                self.df_cat = (
+                    self.df.groupby(self.main_cat_col, as_index=False)[
+                        self.main_num_col
+                    ]
+                    .agg(["sum", "mean", "max", "min"])
+                    .round(1)
                 )
 
-                self.df_cat = self.df.groupby(
-                    [self.main_column, self.main_cat_col],
-                    as_index=False,
-                )[[self.main_num_col]].sum()
-
-                self.df_cat_agg = (
-                    self.df.groupby(
-                        [self.main_column, self.main_cat_col],
-                        as_index=False,
-                    )[[self.main_num_col]]
-                    .agg(["mean", "min", "max"])
-                    .round(2)
-                )
-
-                self.df_cat = self.df_cat.merge(
-                    self.df_cat_agg, on=[self.main_column, self.main_cat_col]
-                )
+                self.df_cat.columns = ["total", "mean", "min", "max"]
+                self.df_cat = self.df_cat.reset_index()
+                self.df_cat = self.df_cat
 
                 self.df_cat_filt = self.df_cat[
-                    (self.df_cat[self.main_column] == self.selected_main_column)
-                    & (self.df_cat[self.main_cat_col] == self.selected_main_cat_col)
-                ]
+                    (self.df_cat[self.main_cat_col] == self.selected_main_cat_col)
+                ].T
 
-                self.df_cat_filt.columns = [
-                    self.main_column,
-                    self.main_cat_col,
-                    "total",
-                    "mean",
-                    "min",
-                    "max",
-                ]
-                self.df_cat_filt = self.df_cat_filt.T
+                self.df_cat_filt.columns = ["Query #2"]
 
-                self.df_cat_filt.columns = ["Information"]
-                st.dataframe(self.df_cat_filt)
+                col1, col2 = st.columns(2)
+
+                with col1:
+                    st.dataframe(self.df_obj_filt)
+                with col2:
+                    st.dataframe(self.df_cat_filt)
+
+                # self.df_cat_filt = self.df_cat_filt.T
+                # st.dataframe(self.df_obj_filt.T)
+                # self.df_cat_filt.columns = ["Information"]
+                # st.dataframe(self.df_cat_filt)
 
     def run(self, url):
         self.url = url

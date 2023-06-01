@@ -1530,17 +1530,10 @@ def barv_plotly(barv_df, barv_str_column, barv_num_col, color_v, height_, width_
 
 
 def sec_bar_mdf(
-    bar_m_df,
-    mbar_df,
-    mbar_cat_col,
-    mbar_num_col,
-    mbar_str_column,
-    height_s,
-    width_s,
-    title_size_s,
+    mbar_df, mbar_cat_col, mbar_num_col, mbar_str_column, height_s, width_s
 ):
     fig = px.bar(
-        bar_m_df,
+        mbar_df,
         x=mbar_cat_col,
         y=mbar_num_col,
         color=mbar_str_column,
@@ -1551,7 +1544,7 @@ def sec_bar_mdf(
     fig.update_layout(
         title={
             "text": f"{mbar_str_column.split('_')[0]}s with most {mbar_df.columns[1].replace('_', ' ')} per {mbar_cat_col.replace('_', ' ')}",
-            "font": {"family": "Arial", "size": title_size_s},
+            "font": {"family": "Arial", "size": 25},
             "x": 0.5,
             "xanchor": "center",
         },
@@ -1560,8 +1553,8 @@ def sec_bar_mdf(
         height=height_s,
         xaxis=dict(
             title=mbar_cat_col,
-            tickvals=bar_m_df[mbar_cat_col],
-            ticktext=bar_m_df[mbar_cat_col].astype(int).astype(str),
+            tickvals=mbar_df[mbar_cat_col],
+            ticktext=mbar_df[mbar_cat_col].astype(int).astype(str),
         ),
         yaxis=dict(title=mbar_num_col.capitalize()),
     )
