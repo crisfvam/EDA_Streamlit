@@ -106,6 +106,23 @@ class EDA:
         else:
             _self.dataset = None
 
+        # Crear un checkbox
+
+        col1, col2, col3, col4, col5, col6 = st.columns(6)
+
+        with col3:
+            option_selected = st.checkbox("Show dataframe")
+            # Verificar si el checkbox está seleccionado
+            if option_selected:
+                st.dataframe(_self.dataset)
+
+        with col4:
+            link_text = "Proccess Dataframe in this app"
+            link_url = "https://crfvalenciam-etl-etl-mvbeyb.streamlit.app/"
+
+            st.markdown(f"[{link_text}]({link_url})")
+        st.write("---")
+
     def visualize_data(self):
         if self.dataset is not None:
             modify_data_types(self.dataset, categories_number=150)
