@@ -675,6 +675,33 @@ class EDA:
             #     self.main_date_col,
             # ]
 
+            title_html = f"""
+            <div style="text-align: center;">
+                <h1 style="font-family: Helvetica Neue, serif;
+               font-style: italic;
+               font-weight: bold;
+               font-size: 35px;
+               color: white;
+               background-repeat: no-repeat;
+               background-size: cover;
+               padding: 20px;">Advanced Queries</h1>
+            </div>
+
+        """
+
+            st.markdown(title_html, unsafe_allow_html=True)
+
+            st.markdown(
+                """
+                <style>
+                    .stApp {
+                        background-color: #1a1a1a; /* Azul oscuro mezclado con gris */
+                    }
+                </style>
+                """,
+                unsafe_allow_html=True,
+            )
+
             col1, col2, col3, col4, col5 = st.columns(5)
 
             # Contenido de la primera columna (col1)
