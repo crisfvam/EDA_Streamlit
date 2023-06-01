@@ -105,20 +105,20 @@ class EDA:
             elif file_extension == "pickle":
                 _self.dataset = pickle.load(uploaded_file)
 
-            col1, col2, col3, col4, col5, col6 = st.columns(6)
+            option_selected = st.checkbox("Show dataframe")
+            # Verificar si el checkbox está seleccionado
+            if option_selected:
+                st.dataframe(_self.dataset)
+            link_text = "Proccess Dataframe in this app"
+            link_url = "https://crfvalenciam-etl-etl-mvbeyb.streamlit.app/"
 
-            with col3:
-                option_selected = st.checkbox("Show dataframe")
-                # Verificar si el checkbox está seleccionado
-                if option_selected:
-                    st.dataframe(_self.dataset)
-
-            with col4:
-                link_text = "Proccess Dataframe in this app"
-                link_url = "https://crfvalenciam-etl-etl-mvbeyb.streamlit.app/"
-
-                st.markdown(f"[{link_text}]({link_url})")
+            st.markdown(f"[{link_text}]({link_url})")
             st.write("---")
+
+            # col1, col2, col3, col4, col5, col6 = st.columns(6)
+
+            # with col3:
+
         else:
             _self.dataset = None
 
@@ -517,8 +517,6 @@ class EDA:
                     st.plotly_chart(fig)
 
                 elif option == "Stacked Bars":
-                    from plotly.exceptions import PlotlyError
-
                     # st.dataframe(self.df_top_bar)
                     # st.dataframe(self.df_top_d)
 
@@ -528,10 +526,7 @@ class EDA:
                         self.df_top_bar.columns[1],
                         self.df_top_bar.columns[2],
                     )
-                    raise PlotlyError(
-                        "The `figure_or_data` positional argument must be "
-                        "`dict`-like, `list`-like, or an instance of plotly.graph_objs.Figure"
-                    )
+
                     st.plotly_chart(fig)
 
                     # Lanzar error personalizado
