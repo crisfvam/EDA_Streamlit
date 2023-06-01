@@ -109,11 +109,6 @@ class EDA:
             # Verificar si el checkbox está seleccionado
             if option_selected:
                 st.dataframe(_self.dataset)
-            link_text = "Proccess Dataframe in this app"
-            link_url = "https://crfvalenciam-etl-etl-mvbeyb.streamlit.app/"
-
-            st.markdown(f"[{link_text}]({link_url})")
-            st.write("---")
 
             # col1, col2, col3, col4, col5, col6 = st.columns(6)
 
@@ -121,6 +116,11 @@ class EDA:
 
         else:
             _self.dataset = None
+            link_text = "Proccess Dataframe in this app"
+            link_url = "https://crfvalenciam-etl-etl-mvbeyb.streamlit.app/"
+
+            st.markdown(f"[{link_text}]({link_url})")
+            st.write("---")
 
         # Crear un checkbox
 
