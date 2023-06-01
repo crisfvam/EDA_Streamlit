@@ -1482,41 +1482,103 @@ def barv_plotly(barv_df, barv_str_column, barv_num_col, color_v, height_, width_
 
     return fig
 
-    import plotly.graph_objs as go
+
+import pandas as pd
+import streamlit as st
+import plotly.graph_objects as go
+
+
+# def mul_bar(df, x_column, y_column, numeric_column):
+#     fig = go.Figure()
+
+#     for categoria2 in df[y_column].unique():
+#         subset = df[df[y_column] == categoria2]
+#         fig.add_trace(
+#             go.Bar(x=subset[x_column], y=subset[numeric_column], name=categoria2)
+#         )
+
+#     fig.update_layout(barmode="stack")
+
+#     # Mostrar gráfico en Streamlit
+#     st.plotly_chart(fig)
+
+# import seaborn as sns
+
+
+# def mul_bar(df, x_column, y_column, numeric_column):
+#     # Crear el gráfico de barras utilizando Seaborn
+#     sns.barplot(data=df, x=x_column, y=numeric_column, hue=y_column)
+
+#     # Mostrar gráfico en Streamlit
+#     st.pyplot()
+
+
+import streamlit as st
+import plotly.graph_objects as go
+
+
+def mul_bar(df, x_column, y_column, numeric_column):
+    fig = go.Figure()
+
+    for categoria2 in df[y_column].unique():
+        subset = df[df[y_column] == categoria2]
+        fig.add_trace(
+            go.Bar(x=subset[x_column], y=subset[numeric_column], name=categoria2)
+        )
+
+    fig.update_layout(barmode="stack")
+
+    # Mostrar gráfico en Streamlit
+    st.plotly_chart(fig)
+
+
+# # Datos de ejemplo
+# data = {
+#     'Categoría A': ['X', 'Y', 'Z'],
+#     'Categoría B': ['X', 'Y', 'Z'],
+#     'Variable Numérica': [10, 15, 7]
+# }
+
+# # Llamar a la función
+# mul_bar(data=data,
+#         x_column='Categoría A',
+#         y_column='Categoría B',
+#         numeric_column='Variable Numérica',
+#         title='Relación entre dos variables categóricas y una numérica',
+#         xaxis_title='Categorías',
+#         yaxis_title='Variable Numérica')
 
 
 # def mul_bar(
 #     bar_m_df,
-#     mbar_df,
 #     mbar_str_column,
 #     mbar_cat_col,
 #     mbar_num_col,
 #     height_m,
 #     width_m,
-#     title_size_m,
 # ):
 #     # Crea la figura
 #     fig = go.Figure()
 
-#     for customer_name in bar_m_df[mbar_str_column].unique():
-#         customer_df = bar_m_df[bar_m_df[mbar_str_column] == customer_name]
-#         fig.add_trace(
-#             go.Bar(
-#                 x=customer_df[mbar_cat_col],
-#                 y=customer_df[mbar_num_col],
-#                 name=customer_name,
-#             )
+#     # for customer_name in bar_m_df[mbar_str_column].unique():
+#     #     customer_df = bar_m_df[bar_m_df[mbar_str_column] == customer_name]
+#     fig.add_trace(
+#         go.Bar(
+#             x=bar_m_df[mbar_str_column],
+#             y=bar_m_df[mbar_num_col],
+#             name=bar_m_df[mbar_cat_col],
 #         )
+#     )
 
 #     # Configura el diseño del gráfico
 #     fig.update_layout(
 #         title={
-#             "text": f"{mbar_str_column.split('_')[0]}s with most {mbar_df.columns[1].replace('_', ' ')} per {mbar_cat_col.replace('_', ' ')}",
+#             "text": f"{mbar_str_column.split('_')[0]}s with most {bar_m_df.columns[1].replace('_', ' ')} per {mbar_cat_col.replace('_', ' ')}",
 #             "font": {"family": "Arial", "size": 32},
 #             "x": 0.5,
 #             "xanchor": "center",
 #         },
-#         font=dict(family="Courier New, monospace", size=title_size_m, color="#7f7f7f"),
+#         font=dict(family="Courier New, monospace", size=25, color="#7f7f7f"),
 #         yaxis=dict(title=mbar_num_col),
 #         xaxis=dict(title=mbar_cat_col),
 #         width=width_m,
@@ -1526,7 +1588,7 @@ def barv_plotly(barv_df, barv_str_column, barv_num_col, color_v, height_, width_
 #     return fig
 
 
-# import plotly.express as px
+import plotly.express as px
 
 
 def sec_bar_mdf(

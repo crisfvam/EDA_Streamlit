@@ -42,6 +42,7 @@ from tools.my_functions import (
     line_graph,
     top_df_simple,
     line_graph_mult,
+    mul_bar,
 )
 
 
@@ -103,25 +104,25 @@ class EDA:
                     _self.dataset = pd.read_csv(uploaded_file, sep=_self.separator)
             elif file_extension == "pickle":
                 _self.dataset = pickle.load(uploaded_file)
+
+            col1, col2, col3, col4, col5, col6 = st.columns(6)
+
+            with col3:
+                option_selected = st.checkbox("Show dataframe")
+                # Verificar si el checkbox está seleccionado
+                if option_selected:
+                    st.dataframe(_self.dataset)
+
+            with col4:
+                link_text = "Proccess Dataframe in this app"
+                link_url = "https://crfvalenciam-etl-etl-mvbeyb.streamlit.app/"
+
+                st.markdown(f"[{link_text}]({link_url})")
+            st.write("---")
         else:
             _self.dataset = None
 
         # Crear un checkbox
-
-        col1, col2, col3, col4, col5, col6 = st.columns(6)
-
-        with col3:
-            option_selected = st.checkbox("Show dataframe")
-            # Verificar si el checkbox está seleccionado
-            if option_selected:
-                st.dataframe(_self.dataset)
-
-        with col4:
-            link_text = "Proccess Dataframe in this app"
-            link_url = "https://crfvalenciam-etl-etl-mvbeyb.streamlit.app/"
-
-            st.markdown(f"[{link_text}]({link_url})")
-        st.write("---")
 
     def visualize_data(self):
         if self.dataset is not None:
@@ -347,10 +348,10 @@ class EDA:
                 & (self.df_top_l[self.df_top_l.columns[0]] <= self.fecha_max)
             ]
 
-            self.filtro = list(self.df[self.main_column])
+            self.filtro_1 = list(self.df[self.main_column])
             self.df_top_d = (
                 self.df[
-                    (self.df[self.main_column].isin(self.filtro))
+                    (self.df[self.main_column].isin(self.filtro_1))
                     & (self.df[self.main_date_col] >= self.fecha_min)
                     & (self.df[self.main_date_col] <= self.fecha_max)
                 ]
@@ -361,6 +362,10 @@ class EDA:
             )
 
             self.df_top_d.sort_values(self.main_date_col, ascending=False)
+
+            # --------------------------------#
+            # -------------------------------#
+
             # st.write("---")
             st.markdown(
                 "<p style='text-align: center; font-family: Georgia, serif;'>Filtrar by {}</p>".format(
@@ -410,6 +415,39 @@ class EDA:
                 self.mean_max = st.number_input(
                     "Maximun Mean", value=self.mean_max, step=1.0
                 )
+
+            self.df_top_bar = top_df_simple(
+                self.df,
+                self.main_cat_col,
+                self.main_num_col,
+                self.ascen,
+            )
+            self.df_top_bar = self.df_top_bar.sort_values(
+                self.df_top_bar.columns[0], ascending=False
+            )
+
+            # self.df_filtered_top = self.df_top_bar[
+            #     (self.df_top_bar[self.df_top_bar.columns[1]] >= self.total_min)
+            #     & (self.df_top_bar[self.df_top_bar.columns[1]] <= self.total_max)
+            # ]
+
+            self.filtro = list(self.df[self.main_column])
+            self.df_top_bar = (
+                self.df[
+                    (self.df[self.main_column].isin(self.filtro))
+                    & (self.df[self.main_num_col] >= self.total_min)
+                    & (self.df[self.main_num_col] <= self.total_max)
+                ]
+                .groupby([self.main_column, self.main_cat_col], as_index=False)[
+                    self.main_num_col
+                ]
+                .sum()
+                .sort_values(by=self.main_num_col, ascending=False)
+            )
+
+            # self.df_top_bar = self.df_top_bar.sort_values(
+            #     self.main_num_col, ascending=False
+            # )
 
             # st.markdown(
             #     "<p style='text-align: center; font-family: Georgia, serif;'>Filtrar por media {}</p>".format(
@@ -479,23 +517,29 @@ class EDA:
                     st.plotly_chart(fig)
 
                 elif option == "Stacked Bars":
-                    st.dataframe(self.df_top_n)
+                    from plotly.exceptions import PlotlyError
 
-                    fig = sec_bar_mdf(
-                        self.df_top_d,
-                        self.df_top_d.columns[1],
-                        self.df_top_d.columns[2],
-                        self.df_top_d.columns[0],
-                        self.height_two,
-                        self.width_two,
+                    # st.dataframe(self.df_top_bar)
+                    # st.dataframe(self.df_top_d)
+
+                    fig = mul_bar(
+                        self.df_top_bar.head(15),
+                        self.df_top_bar.columns[0],
+                        self.df_top_bar.columns[1],
+                        self.df_top_bar.columns[2],
                     )
-
+                    raise PlotlyError(
+                        "The `figure_or_data` positional argument must be "
+                        "`dict`-like, `list`-like, or an instance of plotly.graph_objs.Figure"
+                    )
                     st.plotly_chart(fig)
 
-                # st.markdown(
-                #     "<h2 style='text-align: center;'>Análisis de Variables Temporales</h2>",
-                #     unsafe_allow_html=True,
-                # )
+                    # Lanzar error personalizado
+
+            # st.markdown(
+            #     "<h2 style='text-align: center;'>Análisis de Variables Temporales</h2>",
+            #     unsafe_allow_html=True,
+            # )
 
             with self.col2:
                 option = st.selectbox(
@@ -745,7 +789,6 @@ class EDA:
 
                 self.df_cat.columns = ["total", "mean", "min", "max"]
                 self.df_cat = self.df_cat.reset_index()
-                self.df_cat = self.df_cat
 
                 self.df_cat_filt = self.df_cat[
                     (self.df_cat[self.main_cat_col] == self.selected_main_cat_col)
@@ -764,6 +807,27 @@ class EDA:
                 # st.dataframe(self.df_obj_filt.T)
                 # self.df_cat_filt.columns = ["Information"]
                 # st.dataframe(self.df_cat_filt)
+                self.df_query = (
+                    self.df.groupby(
+                        [self.main_column, self.main_cat_col], as_index=False
+                    )[self.main_num_col]
+                    .agg(["sum", "mean", "max", "min"])
+                    .round(1)
+                )
+
+                # st.dataframe(self.df_query)
+
+                self.df_query.columns = ["total", "mean", "min", "max"]
+                self.df_query = self.df_query.reset_index()
+
+                self.df_query_filt = self.df_query[
+                    (self.df_query[self.main_column] == self.selected_main_column)
+                    & (self.df_query[self.main_cat_col] == self.selected_main_cat_col)
+                ].T
+
+                self.df_query_filt.columns = [" Query # 3"]
+
+                st.dataframe(self.df_query_filt)
 
     def run(self, url):
         self.url = url
