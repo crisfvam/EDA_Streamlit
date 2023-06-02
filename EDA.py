@@ -32,6 +32,8 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
 )
+# st.set_option("deprecation.showPyplotGlobalUse", False)
+# advertencia en matplotlib
 
 
 class EDA:
@@ -42,7 +44,7 @@ class EDA:
         self.bg_image = None
 
     ###--------------------Variables antes de cargar el dataset---------------------###
-    def add_bg_color(self):
+    def settings_design_app(self):
         title_html = f"""
             <div style="text-align: center;">
                 <h1 style="font-family: Helvetica Neue, serif;
@@ -100,7 +102,7 @@ class EDA:
             st.markdown(f"[{link_text}]({link_url})")
             st.write("---")
 
-    def settings_process_data(self):
+    def settings_and_process_data(self):
         if self.dataset is not None:
             modify_data_types(self.dataset, categories_number=150)
             transformar_columnas_datetime(self.dataset)
@@ -630,18 +632,18 @@ class EDA:
     def run(self, url):
         self.url = url
 
-        self.add_bg_color()
+        self.settings_design_app()
         self.load_data()
-        self.settings_process_data()
+        self.settings_and_process_data()
         self.visualize_data()
 
 
 if __name__ == "__main__":
-    bi = EDA()
-    url = (
-        "https://www.giant.com.my/our-history/"  # La URL que deseas pasar a la función
-    )
-    bi.run(url)
+    app = EDA()
+    # url = (
+    #     "https://www.giant.com.my/our-history/"  # La URL que deseas pasar a la función
+    # )
+    # app.run(url)
 
 
 # # en terminal poner dirección relativa de carpeta de report.py
