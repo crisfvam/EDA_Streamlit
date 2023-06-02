@@ -163,41 +163,6 @@ class EDA:
                 ),
             )
 
-            # Dataframes
-
-            self.df_top_l = top_df_simple(
-                self.df,
-                self.main_date_col,
-                self.main_num_col,
-                self.ascen,
-            )
-            self.df_top_l = self.df_top_l.sort_values(
-                self.df_top_l.columns[0], ascending=False
-            )
-
-            self.df_filtered_top_date = self.df_top_l[
-                (self.df_top_l[self.df_top_l.columns[0]] >= self.fecha_min)
-                & (self.df_top_l[self.df_top_l.columns[0]] <= self.fecha_max)
-            ]
-
-            self.filtro_1 = list(self.df[self.main_column])
-            self.df_top_d = (
-                self.df[
-                    (self.df[self.main_column].isin(self.filtro_1))
-                    & (self.df[self.main_date_col] >= self.fecha_min)
-                    & (self.df[self.main_date_col] <= self.fecha_max)
-                ]
-                .groupby([self.main_column, self.main_date_col], as_index=False)[
-                    self.main_num_col
-                ]
-                .sum()
-            )
-
-            self.df_top_d.sort_values(self.main_date_col, ascending=False)
-
-            # --------------------------------#
-            # -------------------------------#
-
             # st.write("---")
             st.markdown(
                 "<p style='text-align: center; font-family: Georgia, serif;'>Filtrar by {}</p>".format(
@@ -248,6 +213,40 @@ class EDA:
                     "Maximun Mean", value=self.mean_max, step=1.0
                 )
 
+            # Dataframes para grafico de columna datetime respecto a una variable numerica
+
+            self.df_top_l = top_df_simple(
+                self.df,
+                self.main_date_col,
+                self.main_num_col,
+                self.ascen,
+            )
+            self.df_top_l = self.df_top_l.sort_values(
+                self.df_top_l.columns[0], ascending=False
+            )
+
+            self.df_filtered_top_date = self.df_top_l[
+                (self.df_top_l[self.df_top_l.columns[0]] >= self.fecha_min)
+                & (self.df_top_l[self.df_top_l.columns[0]] <= self.fecha_max)
+            ]
+
+            self.filtro_1 = list(self.df[self.main_column])
+            self.df_top_d = (
+                self.df[
+                    (self.df[self.main_column].isin(self.filtro_1))
+                    & (self.df[self.main_date_col] >= self.fecha_min)
+                    & (self.df[self.main_date_col] <= self.fecha_max)
+                ]
+                .groupby([self.main_column, self.main_date_col], as_index=False)[
+                    self.main_num_col
+                ]
+                .sum()
+            )
+
+            self.df_top_d.sort_values(self.main_date_col, ascending=False)
+
+            # Dataframes para grafico de columna categorica respecto a una variable numerica
+
             self.df_top_bar = top_df_simple(
                 self.df,
                 self.main_cat_col,
@@ -257,11 +256,6 @@ class EDA:
             self.df_top_bar = self.df_top_bar.sort_values(
                 self.df_top_bar.columns[0], ascending=False
             )
-
-            # self.df_filtered_top = self.df_top_bar[
-            #     (self.df_top_bar[self.df_top_bar.columns[1]] >= self.total_min)
-            #     & (self.df_top_bar[self.df_top_bar.columns[1]] <= self.total_max)
-            # ]
 
             self.filtro = list(self.df[self.main_column])
             self.df_top_bar = (
@@ -277,6 +271,7 @@ class EDA:
                 .sort_values(by=self.main_num_col, ascending=False)
             )
 
+            # Dataframes para grafico de columna datetime respecto a una variable numerica y a una categorica
             self.df_top_n = top_df_simple(
                 self.df, self.main_column, self.main_num_col, self.ascen
             )
@@ -286,118 +281,7 @@ class EDA:
                 & (self.df_top_n[self.df_top_n.columns[1]] <= self.total_max)
             ]
 
-    def visualize_data(self):
-        if self.dataset is not None:
-            st.write("---")
-
-            self.col1, self.col2 = st.columns(2)
-
-            # Contenido de la primera columna (col1)
-            with self.col1:
-                # st.markdown(
-                #     "<h2 style='text-align: center;'>Análisis de Variables Categoricas</h2>",
-                #     unsafe_allow_html=True,
-                # )
-                option = st.selectbox(
-                    "Categorical graphic",
-                    ("Bar", "Pie", "Stacked Bars"),
-                )
-
-                if option == "Bar":
-                    fig = barv_plotly(
-                        self.df_filtered_top_num.head(15),
-                        self.df_filtered_top_num.columns[0],  # Segunda columna
-                        self.df_filtered_top_num.columns[1],  # Tercera columna
-                        self.color,
-                        self.height_one,
-                        self.width_one,
-                    )
-                    st.plotly_chart(fig)
-
-                elif option == "Pie":
-                    self.df_top_s = top_df_simple(
-                        self.df, self.main_column, self.main_num_col, self.ascen
-                    )
-
-                    fig = pie_graph(
-                        self.df_filtered_top_num.head(15),
-                        self.df_filtered_top_num.columns[0],  # Segunda columna
-                        self.df_filtered_top_num.columns[1],
-                        self.color,
-                        self.height_one,
-                        self.width_one,
-                    )
-
-                    st.plotly_chart(fig)
-
-                elif option == "Stacked Bars":
-                    # st.dataframe(self.df_top_bar)
-                    # st.dataframe(self.df_top_d)
-
-                    fig = mul_bar(
-                        self.df_top_bar.head(15),
-                        self.df_top_bar.columns[0],
-                        self.df_top_bar.columns[1],
-                        self.df_top_bar.columns[2],
-                    )
-
-                    st.plotly_chart(fig)
-
-                    # Lanzar error personalizado
-
-            # st.markdown(
-            #     "<h2 style='text-align: center;'>Análisis de Variables Temporales</h2>",
-            #     unsafe_allow_html=True,
-            # )
-
-            with self.col2:
-                option = st.selectbox(
-                    "Datetime graphic",
-                    ("Line", "Multiple-Line"),
-                )
-
-                if option == "Line":
-                    # self.df_top_l = top_df_simple(
-                    #     self.df,
-                    #     self.main_date_col,
-                    #     self.main_num_col,
-                    #     self.ascen,
-                    # )
-                    fig = line_graph(
-                        self.df_filtered_top_date,
-                        self.df_filtered_top_date.columns[0],
-                        self.df_filtered_top_date.columns[1],
-                        self.height_two,
-                        self.width_two,
-                    )
-                    # fig = barv_plotly(
-                    #     self.df_top_c,
-                    #     self.df_top_c.columns[0],  # Segunda columna
-                    #     self.df_top_c.columns[1],  # Tercera columna
-                    #     self.color,
-                    # )
-                    st.plotly_chart(fig)
-
-                elif option == "Multiple-Line":
-                    # top_df_simple(
-                    #     self.df,
-                    #     self.main_cat_col,
-                    #     self.main_num_col,
-                    #     self.main_date_col,
-                    # )
-
-                    fig = line_graph_mult(
-                        self.df_top_d,
-                        self.df_top_d.columns[1],
-                        self.df_top_d.columns[2],
-                        self.df_top_d.columns[0],
-                        self.height_two,
-                        self.width_two,
-                    )
-
-                    st.plotly_chart(fig)
-
-            st.write("---")
+            ### Dataframe de queries avanzadas #####
 
             self.df_filtered = self.total_df[
                 (self.total_df[self.main_num_col] >= self.total_min)
@@ -419,15 +303,15 @@ class EDA:
                 by=self.main_num_col, ascending=False
             )
 
-            unique_categoricas_tot = (
+            self.unique_categoricas_tot = (
                 self.df_filtered[[self.main_column, self.main_num_col]]
                 .drop_duplicates()
                 .set_index([self.main_column])
             )
 
-            unique_categoricas_tot.columns = ["total"]
+            self.unique_categoricas_tot.columns = ["total"]
 
-            unique_categoricas_date_tot = (
+            self.unique_categoricas_date_tot = (
                 self.df_filtered_date[
                     [self.main_column, self.main_num_col, self.main_date_col]
                 ]
@@ -435,7 +319,7 @@ class EDA:
                 .set_index(self.main_date_col)
             )
 
-            unique_categoricas_date_tot.columns = [
+            self.unique_categoricas_date_tot.columns = [
                 self.main_column,
                 "total",
             ]
@@ -460,17 +344,15 @@ class EDA:
                 by=self.main_num_col, ascending=False
             )
 
-            unique_categoricas = (
+            self.unique_categoricas = (
                 self.df_filtered[[self.main_column, self.main_num_col]]
                 .drop_duplicates()
                 .set_index([self.main_column])
             )
 
-            unique_categoricas.columns = ["mean"]
+            self.unique_categoricas.columns = ["mean"]
 
-            # unique_categoricas.columns = [self.main_column, "mean"]
-
-            unique_categoricas_date = (
+            self.unique_categoricas_date = (
                 self.df_filtered_date[
                     [self.main_date_col, self.main_column, self.main_num_col]
                 ]
@@ -478,16 +360,96 @@ class EDA:
                 .set_index(self.main_date_col)
             )
 
-            unique_categoricas_date.columns = [
+            self.unique_categoricas_date.columns = [
                 self.main_column,
                 "mean",
             ]
 
-            # unique_categoricas_date = [
-            #     self.main_column,
-            #     "mean",
-            #     self.main_date_col,
-            # ]
+    ###-----------------------------------------------Mostrar datos en la app-----------------------#####
+
+    def visualize_data(self):
+        if self.dataset is not None:
+            st.write("---")
+
+            self.col1, self.col2 = st.columns(2)
+
+            # Contenido de la primera columna (col1)
+            with self.col1:
+                option = st.selectbox(
+                    "Categorical graphic",
+                    ("Bar", "Pie", "Stacked Bars"),
+                )
+
+                if option == "Bar":
+                    fig = barv_plotly(
+                        self.df_filtered_top_num.head(15),
+                        self.df_filtered_top_num.columns[0],  # Segunda columna
+                        self.df_filtered_top_num.columns[1],  # Tercera columna
+                        self.color,
+                        self.height_one,
+                        self.width_one,
+                    )
+                    st.plotly_chart(fig)
+
+                elif option == "Pie":
+                    fig = pie_graph(
+                        self.df_filtered_top_num.head(15),
+                        self.df_filtered_top_num.columns[0],  # Segunda columna
+                        self.df_filtered_top_num.columns[1],
+                        self.color,
+                        self.height_one,
+                        self.width_one,
+                    )
+
+                    st.plotly_chart(fig)
+
+                elif option == "Stacked Bars":
+                    fig = mul_bar(
+                        self.df_top_bar.head(15),
+                        self.df_top_bar.columns[0],
+                        self.df_top_bar.columns[1],
+                        self.df_top_bar.columns[2],
+                    )
+
+                    st.plotly_chart(fig)
+
+                    # Lanzar error personalizado
+
+            # st.markdown(
+            #     "<h2 style='text-align: center;'>Análisis de Variables Temporales</h2>",
+            #     unsafe_allow_html=True,
+            # )
+
+            with self.col2:
+                option = st.selectbox(
+                    "Datetime graphic",
+                    ("Line", "Multiple-Line"),
+                )
+
+                if option == "Line":
+                    fig = line_graph(
+                        self.df_filtered_top_date,
+                        self.df_filtered_top_date.columns[0],
+                        self.df_filtered_top_date.columns[1],
+                        self.height_two,
+                        self.width_two,
+                    )
+
+                    st.plotly_chart(fig)
+
+                elif option == "Multiple-Line":
+                    fig = line_graph_mult(
+                        self.df_top_d,
+                        self.df_top_d.columns[1],
+                        self.df_top_d.columns[2],
+                        self.df_top_d.columns[0],
+                        self.height_two,
+                        self.width_two,
+                    )
+
+                    st.plotly_chart(fig)
+
+            st.write("---")
 
             title_html = f"""
             <div style="text-align: center;">
@@ -526,23 +488,23 @@ class EDA:
                 st.markdown(
                     "<p style= font-family: Arial;'>{} total : {} results </p>".format(
                         self.main_num_col.replace("_", " ").capitalize(),
-                        len(unique_categoricas_tot),
+                        len(self.unique_categoricas_tot),
                     ),
                     unsafe_allow_html=True,
                 )
 
-                st.dataframe(unique_categoricas_tot)
+                st.dataframe(self.unique_categoricas_tot)
             with col3:
                 # with colu2:
                 st.markdown(
                     "<p style= font-family: Arial;'>{} mean : {} results</p>".format(
                         self.main_num_col.replace("_", " ").capitalize(),
-                        len(unique_categoricas),
+                        len(self.unique_categoricas),
                     ),
                     unsafe_allow_html=True,
                 )
 
-                st.dataframe(unique_categoricas)
+                st.dataframe(self.unique_categoricas)
 
             with col2:
                 # colu1, colu2 = st.columns(2)
@@ -551,7 +513,7 @@ class EDA:
                     "<p style= font-family: Arial;'>{} total by {} : {} results</p>".format(
                         self.main_num_col.replace("_", " ").capitalize(),
                         self.main_date_col.replace("_", " "),
-                        len(unique_categoricas_date_tot),
+                        len(self.unique_categoricas_date_tot),
                     ),
                     unsafe_allow_html=True,
                 )
@@ -562,19 +524,19 @@ class EDA:
                 #     unsafe_allow_html=True,
                 # )
 
-                st.dataframe(unique_categoricas_date_tot)
+                st.dataframe(self.unique_categoricas_date_tot)
 
             with col4:
                 st.markdown(
                     "<p style= font-family: Arial;'>{} mean by {} : {} results </p>".format(
                         self.main_num_col.replace("_", " ").capitalize(),
                         self.main_date_col.replace("_", " "),
-                        len(unique_categoricas_date),
+                        len(self.unique_categoricas_date),
                     ),
                     unsafe_allow_html=True,
                 )
 
-                st.dataframe(unique_categoricas_date)
+                st.dataframe(self.unique_categoricas_date)
             with col5:
                 st.markdown(
                     "<p style= font-family: Arial;'>Query of {} and {}</p>".format(
@@ -668,15 +630,10 @@ class EDA:
     def run(self, url):
         self.url = url
 
-        # Función principal para ejecutar el análisis de Business Intelligence
-        # self.add_bg_from_local("fo.jpg")
         self.add_bg_color()
         self.load_data()
         self.settings_process_data()
         self.visualize_data()
-        # self.generate_insights()
-        # self.build_prediction_models()
-        # self.generate_conclusions()
 
 
 if __name__ == "__main__":
