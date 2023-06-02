@@ -1,50 +1,29 @@
+###----------------------------------------------Import Libraries-------------------------------------------###
+
+# Librerías para manipulación y análisis de datos
 import pandas as pd
-import numpy as np
+
+# Librería para la manipulación de archivos pickle
 import pickle
-import pyarrow.parquet as pq
+
+# Librería para crear aplicaciones web interactivas
 import streamlit as st
-import plotly.graph_objs as go
-import matplotlib as plt
-import seaborn as sns
-import plotly_express as px
-from PIL import Image
-import requests
-from streamlit_option_menu import option_menu
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-import time
-import base64
-from sklearn.ensemble import ExtraTreesRegressor
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
-from sklearn.preprocessing import LabelEncoder
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
-from bs4 import BeautifulSoup
-from statsmodels.tsa.arima.model import ARIMA
-import re
-import requests
+
+# Librerías para visualización de datos
 import plotly.graph_objects as go
-import plotly.colors
 
-
-# Visualization
-import matplotlib.pyplot as plt
-
+# Funciones personalizadas
 from tools.my_functions import (
     modify_data_types,
     transformar_columnas_datetime,
     get_column_types,
-    top_df_final,
     barv_plotly,
     pie_graph,
-    sec_bar_mdf,
     line_graph,
     top_df_simple,
     line_graph_mult,
     mul_bar,
 )
-
 
 pd.options.display.max_columns = None
 st.set_page_config(
@@ -56,11 +35,13 @@ st.set_page_config(
 
 
 class EDA:
+    ###--------------------Variables antes de cargar el dataset---------------------###
     def __init__(self):
         self.df = None
         self.separator = ","
         self.bg_image = None
 
+    ###--------------------Variables antes de cargar el dataset---------------------###
     def add_bg_color(self):
         title_html = f"""
             <div style="text-align: center;">
@@ -89,126 +70,47 @@ class EDA:
             unsafe_allow_html=True,
         )
 
-    def load_file(_self):
+    def load_data(self):
         uploaded_file = st.file_uploader(
             "Cargar archivo", type=["xlsx", "csv", "pickle"]
         )
         if uploaded_file is not None:
             file_extension = uploaded_file.name.split(".")[-1]
             if file_extension == "xlsx":
-                _self.dataset = pd.read_excel(uploaded_file)
+                self.dataset = pd.read_excel(uploaded_file)
             elif file_extension == "csv":
                 if uploaded_file.size == 0:
-                    _self.dataset = None
+                    self.dataset = None
                 else:
-                    _self.dataset = pd.read_csv(uploaded_file, sep=_self.separator)
+                    self.dataset = pd.read_csv(uploaded_file, sep=self.separator)
             elif file_extension == "pickle":
-                _self.dataset = pickle.load(uploaded_file)
+                self.dataset = pickle.load(uploaded_file)
 
+            #########-----------------------------------------------Filtros, dataframes y variables---------------------------------------########
             option_selected = st.checkbox("Show dataframe")
             # Verificar si el checkbox está seleccionado
             if option_selected:
-                st.dataframe(_self.dataset)
-
-            # col1, col2, col3, col4, col5, col6 = st.columns(6)
-
-            # with col3:
+                st.dataframe(self.dataset)
 
         else:
-            _self.dataset = None
+            self.dataset = None
             link_text = "Proccess Dataframe in this app"
             link_url = "https://crfvalenciam-etl-etl-mvbeyb.streamlit.app/"
 
             st.markdown(f"[{link_text}]({link_url})")
             st.write("---")
 
-        # Crear un checkbox
-
-    def visualize_data(self):
+    def settings_process_data(self):
         if self.dataset is not None:
             modify_data_types(self.dataset, categories_number=150)
             transformar_columnas_datetime(self.dataset)
-
-            # options = {
-            #     "EDA": "EDA 🔍",
-            #     "Power-Bi": "Power-Bi 📈",
-            #     "Insights": "Insights ✅",
-            # }
-
-            # # Agrega la lista desplegable con los emojis
-            # selected_option = st.selectbox(
-            #     "Selecciona una opción",
-            #     list(options.keys()),
-            #     format_func=lambda x: options[x],
-            # )
-            # if selected_option == "Contexto":
-            #     # Establecer el estilo de letra más grande
-            #     st.markdown(
-            #         "<style>h1 {font-size: 40px !important;}</style>",
-            #         unsafe_allow_html=True,
-            #     )
-
-            #     # Cambiar el estilo de letra a una más elegante
-            #     st.markdown(
-            #         "<style>h1 {font-family: 'Garamond', serif;}</style>",
-            #         unsafe_allow_html=True,
-            #     )
-
-            #     # Cambiar el estilo de letra a una más elegante para el texto extraído
-            #     st.markdown(
-            #         "<style>.extracted-text {font-family: 'Garamond', serif;}</style>",
-            #         unsafe_allow_html=True,
-            #     )
-
-            #     # Crear el título con el estilo de letra y formato deseado
-            #     titulo = "<h1 style='text-align: center; color: #88ff88; font-style: italic;'>Giant Supermarket</h1>"
-            #     st.markdown(titulo, unsafe_allow_html=True)
-
-            #     # Resto de tu código...
-            #     url = (
-            #         self.url
-            #     )  # Asumiendo que la URL está almacenada en el atributo "url" de la clase
-            #     response = requests.get(url)
-            #     soup = BeautifulSoup(response.content, "html.parser")
-            #     elements = soup.select(
-            #         ".title-after_title"
-            #     )  # Aplicar el selector .title-after_title
-
-            #     extracted_text = [element.get_text(strip=True) for element in elements]
-
-            #     # Aplicar el estilo de letra y formato deseado al texto extraído
-            #     styled_text = (
-            #         "<p class='extracted-text' style='font-size: 20px;'>"
-            #         + "</p><p class='extracted-text' style='font-size: 20px;'>".join(
-            #             extracted_text
-            #         )
-            #         + "</p>"
-            #     )
-            #     st.markdown(styled_text, unsafe_allow_html=True)
-
-            #     st.dataframe(self.dataset)
-
-            # if selected_option == "EDA":
             self.df = self.dataset.copy()
-            # modify_data_types(self.df, categories_number=150)
-            # st.write(self.df.dtypes)
-
             (
                 self.date_cols,
                 self.num_cols,
                 self.obj_cols,
                 self.cat_cols,
             ) = get_column_types(self.df)
-
-            # self.obj_cols = self.df.select_dtypes(include=["object"]).columns
-            # self.cat_cols = self.df.select_dtypes(include=["category"]).columns
-            # self.num_cols = self.df.select_dtypes(include=["int", "float"]).columns
-            # self.date_cols = self.df.select_dtypes(
-            #     include=["datetime64[ns]"]
-            # ).columns
-            # # self.date_cols = self.date_cols.append(self.num_cols[-7:-1])
-            # # self.num_cols = self.num_cols[0:-7]
-            # st.write("---")
 
             col1, col2, col3, col4, col5, col6 = st.columns(6)
 
@@ -222,6 +124,8 @@ class EDA:
             self.height_two = 400
             self.width_two = 750
 
+            # Filtros interactivos
+
             with col1:
                 self.main_column = st.selectbox("Categorical column #1", self.str_list)
             with col2:
@@ -230,18 +134,6 @@ class EDA:
                 self.main_num_col = st.selectbox("Numeric column", self.num_cols)
             with col4:
                 self.main_date_col = st.selectbox("Datetime column", self.date_cols)
-
-            # formato_ship_date = determinar_formato_fecha(
-            #     self.df, self.main_date_col
-            # )
-
-            # transformar_columnas_datetime(self.df, self.main_date_col)
-
-            # st.write(formato_ship_date)
-
-            # self.main_date_col = pd.to_datetime(self.main_date_col)
-
-            # e el orden del dataframe", list(range(1, 7)))
 
             with col5:
                 self.ascen = st.selectbox("Top/Last", [False, True])
@@ -256,68 +148,6 @@ class EDA:
                     ["Emrld", "Turbo", "Inferno", "Plasma", "Magma", "Viridis"],
                     index=0,
                 )
-
-            # self.ori = st.selectbox(
-            #     "Orientación del gráfico",
-            #     ["Vertical", "Horizontal"],
-            #     index=0,
-            # )
-
-            # if self.ori == "Vertical":
-            #     self.ori = "v"
-            # else:
-            #     self.ori = "h"
-
-            # Opciones de gráficas
-            # plot_options = {
-            #     "Gráfico de barras": barv_plotly,
-            #     "Gráfico tipo 2": plot_type2,
-            #     "Gráfico tipo 3": plot_type3,
-            # }
-
-            # # Barra lateral (sidebar)
-            # sidebar_selection = st.sidebar.selectbox(
-            #     "Seleccione el tipo de gráfico", list(plot_options.keys())
-            # )
-
-            # # Ejecutar función según la opción seleccionada
-            # plot_options[sidebar_selection]()
-
-            # Barra lateral (sidebar)
-
-            # self.df_top_c = top_df_final(
-            #     self.df,
-            #     self.main_column,
-            #     self.main_num_col,
-            #     self.main_cat_col,
-            #     self.ascen,
-            # )
-
-            # with st.sidebar:
-            #     st.title("Seleccionar gráfico")
-            #     option = st.selectbox(
-            #         "Seleccione el tipo de gráfico",
-            #         ("Barra Vertical", "Gráfico de Pastel"),
-            #     )
-            #     barv_df = None  # Tu DataFrame de datos
-            #     pie_df = None  # Tu DataFrame de datos
-
-            # if option == "Barra Vertical":
-            #     fig = barv_plotly(
-            #         self.df_top_c,
-            #         self.df_top_c.columns[0],  # Segunda columna
-            #         self.df_top_c.columns[1],  # Tercera columna
-            #         self.color,
-            #     )
-
-            # elif option == "Gráfico de Pastel":
-            #     fig = pie_graph(
-            #         self.df_top_c,
-            #         self.df_top_c.columns[0],  # Segunda columna
-            #         self.df_top_c.columns[1],
-            #         self.color,
-            #     )
-            # st.write("---")
             st.markdown(
                 "<p style='text-align: center; font-family: Georgia, serif;'>Filtrar by {}</p>".format(
                     self.main_date_col.replace("_", " ")
@@ -332,6 +162,8 @@ class EDA:
                     self.df[self.main_date_col].max(),
                 ),
             )
+
+            # Dataframes
 
             self.df_top_l = top_df_simple(
                 self.df,
@@ -445,26 +277,6 @@ class EDA:
                 .sort_values(by=self.main_num_col, ascending=False)
             )
 
-            # self.df_top_bar = self.df_top_bar.sort_values(
-            #     self.main_num_col, ascending=False
-            # )
-
-            # st.markdown(
-            #     "<p style='text-align: center; font-family: Georgia, serif;'>Filtrar por media {}</p>".format(
-            #         self.main_num_col.replace("_", " ")
-            #     ),
-            #     unsafe_allow_html=True,
-            # )
-
-            # self.mean_min, self.mean_max = st.select_slider(
-            #     " ",
-            #     options=self.mean_df[self.main_num_col].sort_values().unique(),
-            #     value=(
-            #         self.mean_df[self.main_num_col].min(),
-            #         self.mean_df[self.main_num_col].max(),
-            #     ),
-            # )
-
             self.df_top_n = top_df_simple(
                 self.df, self.main_column, self.main_num_col, self.ascen
             )
@@ -474,6 +286,8 @@ class EDA:
                 & (self.df_top_n[self.df_top_n.columns[1]] <= self.total_max)
             ]
 
+    def visualize_data(self):
+        if self.dataset is not None:
             st.write("---")
 
             self.col1, self.col2 = st.columns(2)
@@ -857,7 +671,8 @@ class EDA:
         # Función principal para ejecutar el análisis de Business Intelligence
         # self.add_bg_from_local("fo.jpg")
         self.add_bg_color()
-        self.load_file()
+        self.load_data()
+        self.settings_process_data()
         self.visualize_data()
         # self.generate_insights()
         # self.build_prediction_models()
