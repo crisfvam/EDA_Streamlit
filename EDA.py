@@ -239,7 +239,7 @@ class EDA:
                 with column3:
                     self.mean_min = self.mean_df[self.main_num_col].min()
                     self.mean_min = st.number_input(
-                        "Mín-Mean {}".format(self.main_num_col), value=0, step=1.0
+                        "Mín-Mean {}".format(self.main_num_col), value=0.0, step=1.0
                     )
 
                 with column4:
