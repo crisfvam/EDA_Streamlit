@@ -192,232 +192,217 @@ class EDA:
                         ),
                     )
 
-        self.total_df = self.df.groupby(self.main_column, as_index=False)[
-            self.main_num_col
-        ].sum()
-        self.total_df_date = self.df.groupby(
-            [self.main_column, self.main_date_col], as_index=False
-        )[self.main_num_col].sum()
-
-        self.mean_df = (
-            self.df.groupby(self.main_column, as_index=False)[self.main_num_col]
-            .mean()
-            .round(1)
-        )
-
-        self.mean_df_date = (
-            self.df.groupby([self.main_column, self.main_date_col], as_index=False)[
+            self.total_df = self.df.groupby(self.main_column, as_index=False)[
                 self.main_num_col
-            ]
-            .mean()
-            .round(1)
-        )
-        with colum2:
-            column1, column2, column3, column4 = st.columns(4)
-            with column1:
-                self.total_min = self.total_df[self.main_num_col].min()
-                self.total_min = st.number_input(
-                    "Mín Total {}".format(self.main_num_col), value=0, step=1
-                )
+            ].sum()
+            self.total_df_date = self.df.groupby(
+                [self.main_column, self.main_date_col], as_index=False
+            )[self.main_num_col].sum()
 
-            with column2:
-                self.total_max = self.total_df[self.main_num_col].max()
-                self.total_max = st.number_input(
-                    "Max Total {}".format(self.main_num_col),
-                    value=self.total_max,
-                    step=1,
-                )
-
-            # st.markdown(
-            #     "<p style='text-align: center; font-family: Georgia, serif;'>Filter by Mean {}</p>".format(
-            #         self.main_num_col.replace("_", " ")
-            #     ),
-            #     unsafe_allow_html=True,
-            # )
-
-            with column3:
-                self.mean_min = self.mean_df[self.main_num_col].min()
-                self.mean_min = st.number_input(
-                    "Mín-Mean {}".format(self.main_num_col), value=0, step=1
-                )
-
-            with column4:
-                self.mean_max = self.mean_df[self.main_num_col].max()
-                self.mean_max = st.number_input(
-                    "Max-mean {}".format(self.main_num_col),
-                    value=self.mean_max,
-                    step=1.0,
-                )
-
-            # with col4:
-            #     st.write("---")
-
-            # Dataframes para grafico de columna datetime respecto a una variable numerica
-
-            self.df_top_l = top_df_simple(
-                self.df,
-                self.main_date_col,
-                self.main_num_col,
-                self.ascen,
-            )
-            self.df_top_l = self.df_top_l.sort_values(
-                self.df_top_l.columns[0], ascending=False
+            self.mean_df = (
+                self.df.groupby(self.main_column, as_index=False)[self.main_num_col]
+                .mean()
+                .round(1)
             )
 
-            self.df_filtered_top_date = self.df_top_l[
-                (self.df_top_l[self.df_top_l.columns[0]] >= self.fecha_min)
-                & (self.df_top_l[self.df_top_l.columns[0]] <= self.fecha_max)
-            ]
-
-            self.filtro_1 = list(self.df[self.main_column])
-            self.df_top_d = (
-                self.df[
-                    (self.df[self.main_column].isin(self.filtro_1))
-                    & (self.df[self.main_date_col] >= self.fecha_min)
-                    & (self.df[self.main_date_col] <= self.fecha_max)
-                ]
-                .groupby([self.main_column, self.main_date_col], as_index=False)[
+            self.mean_df_date = (
+                self.df.groupby([self.main_column, self.main_date_col], as_index=False)[
                     self.main_num_col
                 ]
-                .sum()
+                .mean()
+                .round(1)
             )
+            with colum2:
+                column1, column2, column3, column4 = st.columns(4)
+                with column1:
+                    self.total_min = self.total_df[self.main_num_col].min()
+                    self.total_min = st.number_input(
+                        "Mín Total {}".format(self.main_num_col), value=0, step=1
+                    )
 
-            try:
-                # Intentar convertir la columna a objetos de fecha
-                self.df_filtered_top_date[self.main_date_col] = pd.to_datetime(
-                    self.df_filtered_top_date[self.main_date_col], format="%d/%m/%Y"
+                with column2:
+                    self.total_max = self.total_df[self.main_num_col].max()
+                    self.total_max = st.number_input(
+                        "Max Total {}".format(self.main_num_col),
+                        value=self.total_max,
+                        step=1,
+                    )
+
+                # st.markdown(
+                #     "<p style='text-align: center; font-family: Georgia, serif;'>Filter by Mean {}</p>".format(
+                #         self.main_num_col.replace("_", " ")
+                #     ),
+                #     unsafe_allow_html=True,
+                # )
+
+                with column3:
+                    self.mean_min = self.mean_df[self.main_num_col].min()
+                    self.mean_min = st.number_input(
+                        "Mín-Mean {}".format(self.main_num_col), value=0, step=1
+                    )
+
+                with column4:
+                    self.mean_max = self.mean_df[self.main_num_col].max()
+                    self.mean_max = st.number_input(
+                        "Max-mean {}".format(self.main_num_col),
+                        value=self.mean_max,
+                        step=1.0,
+                    )
+
+                # with col4:
+                #     st.write("---")
+
+                # Dataframes para grafico de columna datetime respecto a una variable numerica
+
+                self.df_top_l = top_df_simple(
+                    self.df,
+                    self.main_date_col,
+                    self.main_num_col,
+                    self.ascen,
+                )
+                self.df_top_l = self.df_top_l.sort_values(
+                    self.df_top_l.columns[0], ascending=False
                 )
 
-                # Ordenar el DataFrame por el año en orden descendente
-                self.df_filtered_top_date.sort_values(
-                    self.main_date_col.dt.year, ascending=False, inplace=True
+                self.df_filtered_top_date = self.df_top_l[
+                    (self.df_top_l[self.df_top_l.columns[0]] >= self.fecha_min)
+                    & (self.df_top_l[self.df_top_l.columns[0]] <= self.fecha_max)
+                ]
+
+                self.filtro_1 = list(self.df[self.main_column])
+                self.df_top_d = (
+                    self.df[
+                        (self.df[self.main_column].isin(self.filtro_1))
+                        & (self.df[self.main_date_col] >= self.fecha_min)
+                        & (self.df[self.main_date_col] <= self.fecha_max)
+                    ]
+                    .groupby([self.main_column, self.main_date_col], as_index=False)[
+                        self.main_num_col
+                    ]
+                    .sum()
                 )
 
-            except:
-                # Manejar la excepción si la columna no se puede convertir a datetime
-                pass
+                # Dataframes para grafico de columna categorica respecto a una variable numerica
 
-            # Dataframes para grafico de columna categorica respecto a una variable numerica
+                self.df_top_bar = top_df_simple(
+                    self.df,
+                    self.main_cat_col,
+                    self.main_num_col,
+                    self.ascen,
+                )
+                self.df_top_bar = self.df_top_bar.sort_values(
+                    self.df_top_bar.columns[0], ascending=False
+                )
 
-            self.df_top_bar = top_df_simple(
-                self.df,
-                self.main_cat_col,
-                self.main_num_col,
-                self.ascen,
-            )
-            self.df_top_bar = self.df_top_bar.sort_values(
-                self.df_top_bar.columns[0], ascending=False
-            )
+                self.filtro = list(self.df[self.main_column])
+                self.df_top_bar = (
+                    self.df[
+                        (self.df[self.main_column].isin(self.filtro))
+                        & (self.df[self.main_num_col] >= self.total_min)
+                        & (self.df[self.main_num_col] <= self.total_max)
+                    ]
+                    .groupby([self.main_column, self.main_cat_col], as_index=False)[
+                        self.main_num_col
+                    ]
+                    .sum()
+                    .sort_values(by=self.main_num_col, ascending=False)
+                )
 
-            self.filtro = list(self.df[self.main_column])
-            self.df_top_bar = (
-                self.df[
-                    (self.df[self.main_column].isin(self.filtro))
-                    & (self.df[self.main_num_col] >= self.total_min)
-                    & (self.df[self.main_num_col] <= self.total_max)
+                # Dataframes para grafico de columna datetime respecto a una variable numerica y a una categorica
+                self.df_top_n = top_df_simple(
+                    self.df, self.main_column, self.main_num_col, self.ascen
+                )
+
+                self.df_filtered_top_num = self.df_top_n[
+                    (self.df_top_n[self.df_top_n.columns[1]] >= self.total_min)
+                    & (self.df_top_n[self.df_top_n.columns[1]] <= self.total_max)
                 ]
-                .groupby([self.main_column, self.main_cat_col], as_index=False)[
-                    self.main_num_col
+
+                ### Dataframe de queries avanzadas #####
+
+                self.df_filtered = self.total_df[
+                    (self.total_df[self.main_num_col] >= self.total_min)
+                    & (self.total_df[self.main_num_col] <= self.total_max)
                 ]
-                .sum()
-                .sort_values(by=self.main_num_col, ascending=False)
-            )
 
-            # Dataframes para grafico de columna datetime respecto a una variable numerica y a una categorica
-            self.df_top_n = top_df_simple(
-                self.df, self.main_column, self.main_num_col, self.ascen
-            )
+                self.df_filtered = self.df_filtered.sort_values(
+                    by=self.main_num_col, ascending=False
+                )
 
-            self.df_filtered_top_num = self.df_top_n[
-                (self.df_top_n[self.df_top_n.columns[1]] >= self.total_min)
-                & (self.df_top_n[self.df_top_n.columns[1]] <= self.total_max)
-            ]
-
-            ### Dataframe de queries avanzadas #####
-
-            self.df_filtered = self.total_df[
-                (self.total_df[self.main_num_col] >= self.total_min)
-                & (self.total_df[self.main_num_col] <= self.total_max)
-            ]
-
-            self.df_filtered = self.df_filtered.sort_values(
-                by=self.main_num_col, ascending=False
-            )
-
-            self.df_filtered_date = self.total_df_date[
-                (self.total_df_date[self.main_num_col] >= self.total_min)
-                & (self.total_df_date[self.main_num_col] <= self.total_max)
-                & (self.total_df_date[self.main_date_col] >= self.fecha_min)
-                & (self.total_df_date[self.main_date_col] <= self.fecha_max)
-            ]
-
-            self.df_filtered_date = self.df_filtered_date.sort_values(
-                by=self.main_num_col, ascending=False
-            )
-
-            self.unique_categoricas_tot = (
-                self.df_filtered[[self.main_column, self.main_num_col]]
-                .drop_duplicates()
-                .set_index([self.main_column])
-            )
-
-            self.unique_categoricas_tot.columns = ["total"]
-
-            self.unique_categoricas_date_tot = (
-                self.df_filtered_date[
-                    [self.main_column, self.main_num_col, self.main_date_col]
+                self.df_filtered_date = self.total_df_date[
+                    (self.total_df_date[self.main_num_col] >= self.total_min)
+                    & (self.total_df_date[self.main_num_col] <= self.total_max)
+                    & (self.total_df_date[self.main_date_col] >= self.fecha_min)
+                    & (self.total_df_date[self.main_date_col] <= self.fecha_max)
                 ]
-                .drop_duplicates()
-                .set_index(self.main_date_col)
-            )
 
-            self.unique_categoricas_date_tot.columns = [
-                self.main_column,
-                "total",
-            ]
+                self.df_filtered_date = self.df_filtered_date.sort_values(
+                    by=self.main_num_col, ascending=False
+                )
 
-            self.df_filtered = self.mean_df[
-                (self.mean_df[self.main_num_col] >= self.mean_min)
-                & (self.mean_df[self.main_num_col] <= self.mean_max)
-            ]
+                self.unique_categoricas_tot = (
+                    self.df_filtered[[self.main_column, self.main_num_col]]
+                    .drop_duplicates()
+                    .set_index([self.main_column])
+                )
 
-            self.df_filtered_date = self.mean_df_date[
-                (self.mean_df_date[self.main_num_col] >= self.mean_min)
-                & (self.mean_df_date[self.main_num_col] <= self.mean_max)
-                & (self.mean_df_date[self.main_date_col] >= self.fecha_min)
-                & (self.mean_df_date[self.main_date_col] <= self.fecha_max)
-            ]
+                self.unique_categoricas_tot.columns = ["total"]
 
-            self.df_filtered = self.df_filtered.sort_values(
-                by=self.main_num_col, ascending=False
-            )
+                self.unique_categoricas_date_tot = (
+                    self.df_filtered_date[
+                        [self.main_column, self.main_num_col, self.main_date_col]
+                    ]
+                    .drop_duplicates()
+                    .set_index(self.main_date_col)
+                )
 
-            self.df_filtered_date = self.df_filtered_date.sort_values(
-                by=self.main_num_col, ascending=False
-            )
-
-            self.unique_categoricas = (
-                self.df_filtered[[self.main_column, self.main_num_col]]
-                .drop_duplicates()
-                .set_index([self.main_column])
-            )
-
-            self.unique_categoricas.columns = ["mean"]
-
-            self.unique_categoricas_date = (
-                self.df_filtered_date[
-                    [self.main_date_col, self.main_column, self.main_num_col]
+                self.unique_categoricas_date_tot.columns = [
+                    self.main_column,
+                    "total",
                 ]
-                .drop_duplicates()
-                .set_index(self.main_date_col)
-            )
 
-            self.unique_categoricas_date.columns = [
-                self.main_column,
-                "mean",
-            ]
+                self.df_filtered = self.mean_df[
+                    (self.mean_df[self.main_num_col] >= self.mean_min)
+                    & (self.mean_df[self.main_num_col] <= self.mean_max)
+                ]
 
-    ###-----------------------------------------------Mostrar datos en la app-----------------------#####
+                self.df_filtered_date = self.mean_df_date[
+                    (self.mean_df_date[self.main_num_col] >= self.mean_min)
+                    & (self.mean_df_date[self.main_num_col] <= self.mean_max)
+                    & (self.mean_df_date[self.main_date_col] >= self.fecha_min)
+                    & (self.mean_df_date[self.main_date_col] <= self.fecha_max)
+                ]
+
+                self.df_filtered = self.df_filtered.sort_values(
+                    by=self.main_num_col, ascending=False
+                )
+
+                self.df_filtered_date = self.df_filtered_date.sort_values(
+                    by=self.main_num_col, ascending=False
+                )
+
+                self.unique_categoricas = (
+                    self.df_filtered[[self.main_column, self.main_num_col]]
+                    .drop_duplicates()
+                    .set_index([self.main_column])
+                )
+
+                self.unique_categoricas.columns = ["mean"]
+
+                self.unique_categoricas_date = (
+                    self.df_filtered_date[
+                        [self.main_date_col, self.main_column, self.main_num_col]
+                    ]
+                    .drop_duplicates()
+                    .set_index(self.main_date_col)
+                )
+
+                self.unique_categoricas_date.columns = [
+                    self.main_column,
+                    "mean",
+                ]
+
+        ###-----------------------------------------------Mostrar datos en la app-----------------------#####
 
     def visualize_data(self):
         if self.dataset is not None:
