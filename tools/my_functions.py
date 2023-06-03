@@ -38,17 +38,6 @@ def determinar_formato_fecha(df, columna):
     return formato_mas_comun
 
 
-# def transformar_columnas_datetime(df):
-#     for columna in df.select_dtypes(include=["datetime64"]).columns.to_list():
-#         try:
-#             df[columna] = pd.to_datetime(
-#                 df[columna], format="%d/%m/%Y", errors="coerce"
-#             )
-#         except:
-#             pass
-#     return df
-
-
 def transformar_columnas_datetime(df):
     for columna in df.select_dtypes(include=["datetime64"]).columns.to_list():
         try:
@@ -84,31 +73,6 @@ def clean_column_names(df):
     return df
 
 
-def data_d(df):
-    num_duplicates = df.duplicated().sum()
-
-    # Mostrar el número de duplicados en Markdown centrado
-    st.markdown(
-        f"<p style='text-align: center;'><strong>Número de duplicados:</strong> {num_duplicates}</p>",
-        unsafe_allow_html=True,
-    )
-
-    # Porcentaje de valores nulos
-    total_cells = np.product(df.shape)
-    num_nulls = df.isnull().sum().sum()
-    null_percentage = (num_nulls / total_cells) * 100
-    st.markdown(
-        f"<p style='text-align: center;'>Porcentaje de valores nulos: {null_percentage:.2f}%</p>",
-        unsafe_allow_html=True,
-    )
-
-
-# Duplicados
-def remove_duplicates(df):
-    df.drop_duplicates(inplace=True)
-    return df
-
-
 # strip_func
 def convert_data_types(df, original_dtypes):
     for col in df.columns:
@@ -124,10 +88,6 @@ def concat_csv_files(path_folder):
     df_concat = pd.concat([pd.read_csv(path_folder + "/" + f) for f in files])
     # Devolvemos el dataframe
     return df_concat
-
-
-# Cambia el tipo de columna
-import pandas as pd
 
 
 def modify_data_types(df, categories_number=150):
@@ -161,79 +121,34 @@ def modify_data_types(df, categories_number=150):
 
 
 def strip_values_of_columns(df):
-    # Guardar los tipos de datos originales
+    for col in df.columns:
+        if df[col].dtype == "object":
+            df[col] = df[col].str.strip()
 
-    return df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
-
-    # modify_data_types(
-    #     df, categories_number=150
-    # )  # Restaurar los tipos de datos originales
-
-    # return df
+    return df
 
 
 # percentage nulls
-def p_nulls(df, show=5):
+def p_nulls(df):
     per_nulls = df.isnull().sum() / len(df) * 100
-    return per_nulls.sort_values(ascending=False).head(show)
+    return per_nulls.sort_values(ascending=False).head(20)
 
 
-# # Eliminar nulls
-# def drop_nulls(df, show, max_percentage_nulls=40):
-#     # Obtener el porcentaje de nulos por columna
-#     null_percentages = (df.isnull().sum() / df.shape[0]) * 100
-
-#     # Obtener las columnas con porcentaje de nulos mayor al límite establecido
-#     columns_to_drop = null_percentages[null_percentages > max_percentage_nulls].index
-
-#     # Eliminar las filas que contienen nulos en las columnas seleccionadas
-#     df = df.dropna(subset=columns_to_drop)
-
-#     # # Mostrar las primeras `show` filas del DataFrame resultante
-#     # st.write(df.head(show))
-
-#     # Retornar el DataFrame modificado
-#     return df
+def p_tot_nulls(df):
+    per = (((df.isnull().sum()) / len(df)) * 100).mean().round(2)
+    return per
 
 
-def drop_nulls(df, max_percentage_nulls=40):
+def drop_nulls(df, max_percentage_nulls):
     columns_to_drop = []
     for col in df.columns:
         porcentaje = df[col].isnull().sum() * 100 / len(df[col])
         if porcentaje > max_percentage_nulls:
             columns_to_drop.append(col)
 
-    df_dropped = df.drop(columns=columns_to_drop)
+    df.drop(columns=columns_to_drop, inplace=True)
 
-    return df_dropped
-
-
-# def drop_nulls(df, max_percentage_nulls=40):
-#     for col in df.columns:
-#         porcentaje = df[col].isnull().sum() * 100 / len(df[col])
-#         if (
-#             porcentaje > max_percentage_nulls
-#         ):  # Elimina las columnas con porcentaje mayor a 40
-#             df.drop(columns=[col], inplace=True)
-
-#     # per_nulls = df.isnull().sum() / len(df.index) * 100
-
-#     return df
-
-
-# def drop_nulls(df, max_percentage_nulls=40):
-#     columns_to_drop = []
-#     for col in df.columns:
-#         porcentaje = df[col].isnull().sum() * 100 / len(df)
-#         if porcentaje > max_percentage_nulls:
-#             columns_to_drop.append(col)
-
-#     df = df.drop(columns=columns_to_drop)
-
-#     return df
-
-
-# Repair nulls
+    return df
 
 
 def impute_nulls(df, list_cat=None):
@@ -263,99 +178,13 @@ def impute_nulls(df, list_cat=None):
     return df
 
 
-# (
-#     (df.isnull().sum() / len(df.index) * 100)
-#     .sort_values(ascending=False)
-#     .head(show)
-# )
-
-
-# def impute_nulls(df, show=20):
-#     for col in df.columns:
-#         porcentaje = df[col].isnull().sum() * 100 / len(df[col])
-
-#         if porcentaje > 0:
-#             # Tipo CategoricaS
-#             if col in df.select_dtypes(include=["category"]).columns.tolist():
-#                 df[col].fillna(
-#                     df[col].mode()[0], inplace=True
-#                 )  # las variables categoricas se reemplazan por la moda
-
-#                 # Tipo object
-#             elif col in df.select_dtypes(include=["object"]).columns.tolist():
-#                 df[col].fillna(
-#                     value="no_information_found", inplace=True
-#                 )  # Las variables object se reemplazan por un string
-
-#                 # Tipo date
-#             elif col in df.select_dtypes(include=["datetime64[ns]"]).columns.tolist():
-#                 df[col].fillna(
-#                     df[col].median(), inplace=True
-#                 )  # Las variables datetime se reemplazan por un la mediana
-
-#     return (
-#         (df.isnull().sum() / len(df.index) * 100)
-#         .sort_values(ascending=False)
-#         .head(show)
-#     )
-
-
-# def impute_num_nulls(df, list_cat, show=20):
-#     for i in df.select_dtypes(include=["int64", "float64"]).columns.tolist():
-#         porcentaje = df[i].isnull().sum() * 100 / len(df[i])
-
-#         if porcentaje > 0:
-#             for j in range(0, len(list_cat)):
-#                 # Se usa try porque al final puede arrojar un error en el range, para la ultima columna, por eso cuando
-#                 # no ejecuta el ciclo, lo "rompe".
-#                 try:
-#                     grupo = df.groupby(list_cat[j:])
-
-#                     # Imputamos los nulos por la media de la agrupacion de las variables categoricas para esa columna
-#                     df[i] = grupo[i].transform(lambda x: x.fillna(x.mean()))
-#                 except:
-#                     break
-#     return (
-#         (df.isnull().sum() / len(df.index) * 100)
-#         .sort_values(ascending=False)
-#         .head(show)
-#     )
-
-
-# Duplicados
-
-
 def duplicados(df):
+    dup_df = df.duplicated().sum()
+    if dup_df > 0:
+        df = df.drop_duplicates()
     num_duplicates = df.duplicated().sum()
 
-    if num_duplicates > 0:
-        st.write("El número de duplicados es: {}".format(num_duplicates))
-        df = df.drop_duplicates()
-        st.write(
-            "Se han eliminado los duplicados, ahora hay {}".format(
-                df.duplicated().sum()
-            )
-        )
-    else:
-        st.write("El número de duplicados es: {}".format(num_duplicates))
-
-
-def duplicados_streamlit(df):
-    num_duplicates = df.duplicated().sum()
-    messages = []
-
-    if num_duplicates > 0:
-        messages.append("El número de duplicados es: {}".format(num_duplicates))
-        df = df.drop_duplicates()
-        messages.append(
-            "Se han eliminado los duplicados, ahora hay {}".format(
-                df.duplicated().sum()
-            )
-        )
-    else:
-        messages.append("El número de duplicados es: {}".format(num_duplicates))
-
-    return messages
+    return df, dup_df, num_duplicates
 
 
 # Create new columns year, month, day
@@ -402,45 +231,12 @@ def get_column_types(df):
     return date_list, num_list, object_list, category_list
 
 
-# def date_columns(df, column_name):
-#     df[column_name] = pd.to_datetime(df[column_name])  # convert column in datetime
-#     df.set_index(column_name, inplace=True)
-#     df["year_" + column_name] = df.index.year
-#     df["month_" + column_name] = df.index.month
-#     df["day_" + column_name] = df.index.day
-#     # df['hour'] = df.index.hour
-#     df.reset_index(inplace=True)
+# def p_total_out(df, z_score_threshold):
+#     z_scores = (df - df.mean()) / df.std()
 
-#     return df.head(3)
+#     porcentaje_outliers = ((z_scores.abs() > z_score_threshold).mean() * 100).mean()
 
-
-# def money(df, simbol="£ "):
-#     df1 = df.copy()
-#     lista1 = []
-#     for i in range(len(df1.columns)):
-#         lista1 = []
-#         for j in df1[df1.columns[i]]:
-#             c = simbol + str(j)
-#             punto = c.find(".")
-#             c = c[: punto + 2]
-#             lista1.append(c)
-#         df1[df1.columns[i]] = lista1
-#     return df1
-
-
-# def dollars(df, column, simbol="$"):
-#     df[column] = df[column].str.replace(",", "")
-#     df[column] = pd.to_numeric(df[column].str.strip(simbol))
-#     return df
-
-
-# def euros(df, column, simbol="€"):
-#     # df[column] = df[column].str.replace(",","")
-#     df[column] = pd.to_numeric(df[column].str.strip(simbol))
-#     return df
-
-
-# Outliers------------------------------------------------
+#     return porcentaje_outliers
 
 
 def drop_outliers(df, numeric_columns_list, factor=1.5):
@@ -490,9 +286,9 @@ def detect_outliers_z_score(df, threshold=1.96):
             )
 
     if len(columns_with_outliers) > 0:
-        st.write("Columnas con outliers:")
+        # st.write("Columnas con outliers:")
 
-        st.write("Gráfico de Boxplot para columnas con outliers:")
+        # st.write("Gráfico de Boxplot para columnas con outliers:")
         fig, ax = plt.subplots()
         df[columns_with_outliers].boxplot(ax=ax)
         plt.xticks(rotation=45)
@@ -553,8 +349,10 @@ def top_df_simple(df, main_column, main_num_col, ascen):
 
 def top_df_complete(df, main_cat_col, main_num_col, main_date_col, ascen):
     filtro = list(df[main_cat_col])
-    df_top_d = df[df[main_cat_col].isin(filtro)].groupby(
-        [main_cat_col, main_date_col], as_index=False[main_num_col].sum()
+    df_top_d = (
+        df[df[main_cat_col].isin(filtro)]
+        .groupby([main_cat_col, main_date_col], as_index=False)[main_num_col]
+        .sum()
     )
 
     df_top_d.sort_values(main_num_col, ascending=ascen, inplace=True)
@@ -562,178 +360,188 @@ def top_df_complete(df, main_cat_col, main_num_col, main_date_col, ascen):
     return df_top_d
 
 
-# self.filtro = list(self.df[self.main_cat_col])
-#                         self.df_top_d = (
-#                             self.df[self.df[self.main_cat_col].isin(self.filtro)]
-#                             .groupby(
-#                                 [self.main_cat_col, self.main_date_col], as_index=False
-#                             )[self.main_num_col]
-#                             .sum()
-#                         )
+def statistic_df(df):
+    df_description = df.describe().T
+    columns_to_drop = ["count", "25%", "75%"]
+    df_description.drop(columns=columns_to_drop, inplace=True)
+    df_description.columns = ["mean", "STD", "median", "min", "max"]
+    df_description = round(df_description, 1)
+    return df_description
 
 
-# def top_df(
-#     df,
-#     main_column,
-#     main_num_col,
-#     main_cat_col,
-#     ascen,
-#     filter_column=None,
-#     filter_value=None,
-# ):
-#     # Apply filter if provided
-#     if filter_column is not None and filter_value is not None:
-#         df = df[df[filter_column] == filter_value]
-
-#     # Creación de primero; la columna de consulta principal y segundo la columna numerica
-#     df_main_var = (
-#         df.groupby([main_column], as_index=False)[main_num_col]
-#         .sum()
-#         .sort_values(by=main_num_col, ascending=False)
-#     )
-
-#     # Renombrando la columna numerica, ya que es la sumatoria total por registro de la columna de consulta principal
-#     df_main_var.rename({main_num_col: "total_" + main_num_col}, axis=1, inplace=True)
-
-#     # Columna que arroja los registros de la variable categorica que mas sumatoria tiene de la variable numerica por variable principal de consulta
-#     df_main_var[
-#         main_cat_col
-#         + "_with_most_"
-#         + main_num_col
-#         + "_of_the_"
-#         + main_column.split("_")[0]
-#     ] = [
-#         list(
-#             df.loc[(df[main_column] == i)]
-#             .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
-#             .sum()
-#             .sort_values(by=main_num_col, ascending=False)[main_cat_col]
-#         )[0]
-#         for i in df_main_var[main_column]
-#     ]
-
-#     # Columna que arroja el total de la sumatoria de la relacion entre el registro categorico de la columna anterior y  los registros de la variable principal de consulta
-#     df_main_var[
-#         "total_"
-#         + main_num_col
-#         + "_of_this_"
-#         + main_cat_col
-#         + "_by_"
-#         + main_column.split("_")[0]
-#     ] = [
-#         list(
-#             df.loc[(df[main_column] == i)]
-#             .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
-#             .sum()
-#             .sort_values(by=main_num_col, ascending=False)[main_num_col]
-#         )[0]
-#         for i in df_main_var[main_column]
-#     ]
-
-#     # Columna que arroja el promedio de la sumatoria de la relacion entre el registro categorico de la columna anterior y  los registros de la variable principal de consulta
-#     # df_main_var[
-#     #     "AVG_"
-#     #     + main_num_col
-#     #     + "_of_this_"
-#     #     + main_cat_col
-#     #     + "_by_"
-#     #     + main_column.split("_")[0]
-#     # ] = [
-#     #     round(
-#     #         (
-#     #             list(
-#     #                 df.loc[(df[main_column] == i)]
-#     #                 .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
-#     #                 .mean()
-#     #                 .sort_values(by=main_num_col, ascending=False)[main_num_col]
-#     #             )[0]
-#     #         ),
-#     #         2,
-#     #     )
-#     #     for i in df_main_var[main_column]
-#     # ]
-
-#     df_main_var = df_main_var.sort_values(
-#         by=df_main_var.columns.to_list()[1], ascending=ascen
-#     ).head(10)
-
-#     return df_main_var
+"""
+self.filtro = list(self.df[self.main_cat_col])
+                        self.df_top_d = (
+                            self.df[self.df[self.main_cat_col].isin(self.filtro)]
+                            .groupby(
+                                [self.main_cat_col, self.main_date_col], as_index=False
+                            )[self.main_num_col]
+                            .sum()
+                        )"""
 
 
-# def top_df(df, main_column, main_num_col, main_cat_col, ascen):
-#     # Creación de primero; la columna de consulta principal y segundo la columna numerica
-#     df_main_var = (
-#         df.groupby([main_column], as_index=False)[main_num_col]
-#         .sum()
-#         .sort_values(by=main_num_col, ascending=False)
-#     )
+"""def top_df(
+    df,
+    main_column,
+    main_num_col,
+    main_cat_col,
+    ascen,
+    filter_column=None,
+    filter_value=None,
+):
+    # Apply filter if provided
+    if filter_column is not None and filter_value is not None:
+        df = df[df[filter_column] == filter_value]
 
-#     # Renombrando la columna numerica, ya que es la sumatoria total por registro de la columna de consulta principal
-#     df_main_var.rename({main_num_col: "total_" + main_num_col}, axis=1, inplace=True)
+    # Creación de primero; la columna de consulta principal y segundo la columna numerica
+    df_main_var = (
+        df.groupby([main_column], as_index=False)[main_num_col]
+        .sum()
+        .sort_values(by=main_num_col, ascending=False)
+    )
 
-#     # Columna que arroja los registros de la variable categorica que mas sumatoria tiene de la variable numerica por variable principal de consulta
-#     df_main_var[
-#         main_cat_col
-#         + "_with_most_"
-#         + main_num_col
-#         + "_of_the_"
-#         + main_column.split("_")[0]
-#     ] = [
-#         list(
-#             df.loc[(df[main_column] == i)]
-#             .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
-#             .sum()
-#             .sort_values(by=main_num_col, ascending=False)[main_cat_col]
-#         )[0]
-#         for i in df_main_var[main_column]
-#     ]
+    # Renombrando la columna numerica, ya que es la sumatoria total por registro de la columna de consulta principal
+    df_main_var.rename({main_num_col: "total_" + main_num_col}, axis=1, inplace=True)
 
-#     # Columna que arroja el total de la sumatoria de la relacion entre el registro categorico de la columna anterior y  los registros de la variable principal de consulta
-#     df_main_var[
-#         "total_"
-#         + main_num_col
-#         + "_of_this_"
-#         + main_cat_col
-#         + "_by_"
-#         + main_column.split("_")[0]
-#     ] = [
-#         list(
-#             df.loc[(df[main_column] == i)]
-#             .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
-#             .sum()
-#             .sort_values(by=main_num_col, ascending=False)[main_num_col]
-#         )[0]
-#         for i in df_main_var[main_column]
-#     ]
+    # Columna que arroja los registros de la variable categorica que mas sumatoria tiene de la variable numerica por variable principal de consulta
+    df_main_var[
+        main_cat_col
+        + "_with_most_"
+        + main_num_col
+        + "_of_the_"
+        + main_column.split("_")[0]
+    ] = [
+        list(
+            df.loc[(df[main_column] == i)]
+            .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
+            .sum()
+            .sort_values(by=main_num_col, ascending=False)[main_cat_col]
+        )[0]
+        for i in df_main_var[main_column]
+    ]
 
-#     # Columna que arroja el promedio de la sumatoria de la relacion entre el registro categorico de la columna anterior y  los registros de la variable principal de consulta
-#     df_main_var[
-#         "AVG_"
-#         + main_num_col
-#         + "_of_this_"
-#         + main_cat_col
-#         + "_by_"
-#         + main_column.split("_")[0]
-#     ] = [
-#         round(
-#             (
-#                 list(
-#                     df.loc[(df[main_column] == i)]
-#                     .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
-#                     .mean()
-#                     .sort_values(by=main_num_col, ascending=False)[main_num_col]
-#                 )[0]
-#             ),
-#             2,
-#         )
-#         for i in df_main_var[main_column]
-#     ]
+    # Columna que arroja el total de la sumatoria de la relacion entre el registro categorico de la columna anterior y  los registros de la variable principal de consulta
+    df_main_var[
+        "total_"
+        + main_num_col
+        + "_of_this_"
+        + main_cat_col
+        + "_by_"
+        + main_column.split("_")[0]
+    ] = [
+        list(
+            df.loc[(df[main_column] == i)]
+            .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
+            .sum()
+            .sort_values(by=main_num_col, ascending=False)[main_num_col]
+        )[0]
+        for i in df_main_var[main_column]
+    ]
 
-#     df_main_var = df_main_var.sort_values(
-#         by=df_main_var.columns.to_list()[1], ascending=ascen
-#     )
+    # Columna que arroja el promedio de la sumatoria de la relacion entre el registro categorico de la columna anterior y  los registros de la variable principal de consulta
+    # df_main_var[
+    #     "AVG_"
+    #     + main_num_col
+    #     + "_of_this_"
+    #     + main_cat_col
+    #     + "_by_"
+    #     + main_column.split("_")[0]
+    # ] = [
+    #     round(
+    #         (
+    #             list(
+    #                 df.loc[(df[main_column] == i)]
+    #                 .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
+    #                 .mean()
+    #                 .sort_values(by=main_num_col, ascending=False)[main_num_col]
+    #             )[0]
+    #         ),
+    #         2,
+    #     )
+    #     for i in df_main_var[main_column]
+    # ]
 
-#     return df_main_var
+    df_main_var = df_main_var.sort_values(
+        by=df_main_var.columns.to_list()[1], ascending=ascen
+    ).head(10)
+
+    return df_main_var
+
+
+def top_df(df, main_column, main_num_col, main_cat_col, ascen):
+    # Creación de primero; la columna de consulta principal y segundo la columna numerica
+    df_main_var = (
+        df.groupby([main_column], as_index=False)[main_num_col]
+        .sum()
+        .sort_values(by=main_num_col, ascending=False)
+    )
+
+    # Renombrando la columna numerica, ya que es la sumatoria total por registro de la columna de consulta principal
+    df_main_var.rename({main_num_col: "total_" + main_num_col}, axis=1, inplace=True)
+
+    # Columna que arroja los registros de la variable categorica que mas sumatoria tiene de la variable numerica por variable principal de consulta
+    df_main_var[
+        main_cat_col
+        + "_with_most_"
+        + main_num_col
+        + "_of_the_"
+        + main_column.split("_")[0]
+    ] = [
+        list(
+            df.loc[(df[main_column] == i)]
+            .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
+            .sum()
+            .sort_values(by=main_num_col, ascending=False)[main_cat_col]
+        )[0]
+        for i in df_main_var[main_column]
+    ]
+
+    # Columna que arroja el total de la sumatoria de la relacion entre el registro categorico de la columna anterior y  los registros de la variable principal de consulta
+    df_main_var[
+        "total_"
+        + main_num_col
+        + "_of_this_"
+        + main_cat_col
+        + "_by_"
+        + main_column.split("_")[0]
+    ] = [
+        list(
+            df.loc[(df[main_column] == i)]
+            .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
+            .sum()
+            .sort_values(by=main_num_col, ascending=False)[main_num_col]
+        )[0]
+        for i in df_main_var[main_column]
+    ]
+
+    # Columna que arroja el promedio de la sumatoria de la relacion entre el registro categorico de la columna anterior y  los registros de la variable principal de consulta
+    df_main_var[
+        "AVG_"
+        + main_num_col
+        + "_of_this_"
+        + main_cat_col
+        + "_by_"
+        + main_column.split("_")[0]
+    ] = [
+        round(
+            (
+                list(
+                    df.loc[(df[main_column] == i)]
+                    .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
+                    .mean()
+                    .sort_values(by=main_num_col, ascending=False)[main_num_col]
+                )[0]
+            ),
+            2,
+        )
+        for i in df_main_var[main_column]
+    ]
+
+    df_main_var = df_main_var.sort_values(
+        by=df_main_var.columns.to_list()[1], ascending=ascen
+    )
+
+    return df_main_var"""
 
 
 def top_df_final(df, main_column, main_num_col, main_cat_col, ascen):
@@ -799,112 +607,6 @@ def top_df_final(df, main_column, main_num_col, main_cat_col, ascen):
     df_main_var = df_main_var.sort_values(by="total_" + main_num_col, ascending=ascen)
 
     return df_main_var
-
-
-# def top_df(df, main_column, main_num_col, main_cat_col, ascen):
-#     # Creación del DataFrame principal agrupado por la columna principal
-#     df_main_var = df.groupby(main_column, as_index=False)[main_num_col].sum()
-
-#     # Obtener la categoría con la suma más alta de la columna numérica para cada valor de la columna principal
-#     max_cat_indices = df.groupby(main_column)[main_num_col].idxmax()
-#     df_max_cat = df.loc[max_cat_indices][[main_column, main_cat_col]].reset_index(
-#         drop=True
-#     )
-#     df_main_var = df_main_var.merge(df_max_cat, on=main_column)
-
-#     # Obtener la suma total y el promedio para cada valor de la columna principal
-#     df_main_sum = (
-#         df.groupby(main_column, as_index=False)[main_num_col]
-#         .sum()
-#         .rename(columns={main_num_col: "total_" + main_num_col})
-#     )
-#     df_main_avg = (
-#         df.groupby(main_column, as_index=False)[main_num_col]
-#         .mean()
-#         .rename(columns={main_num_col: "AVG_" + main_num_col})
-#     )
-#     df_main_var = df_main_var.merge(df_main_sum, on=main_column)
-#     df_main_var = df_main_var.merge(df_main_avg, on=main_column)
-
-#     df_main_var = df_main_var.sort_values(by="total_" + main_num_col, ascending=ascen)
-
-#     return df_main_var
-
-
-# def top_df(df, main_column, main_num_col, main_cat_col, ascen):
-#     # Creación de primero; la columna de consulta principal y segundo la columna numerica
-#     df_main_var = (
-#         df.groupby([main_column], as_index=False)[main_num_col]
-#         .sum()
-#         .sort_values(by=main_num_col, ascending=False)
-#     )
-
-#     # Renombrando la columna numerica, ya que es la sumatoria total por registro de la columna de consulta principal
-#     df_main_var.rename({main_num_col: "total_" + main_num_col}, axis=1, inplace=True)
-
-#     # Columna que arroja los registros de la variable categorica que mas sumatoria tiene de la variable numerica por variable principal de consulta
-#     df_main_var[
-#         main_cat_col
-#         + "_with_most_"
-#         + main_num_col
-#         + "_of_the_"
-#         + main_column.split("_")[0]
-#     ] = [
-#         list(
-#             df.loc[(df[main_column] == i)]
-#             .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
-#             .sum()
-#             .sort_values(by=main_num_col, ascending=False)[main_cat_col]
-#         )[0]
-#         for i in df_main_var[main_column]
-#     ]
-
-#     # Columna que arroja el total de la sumatoria de la relacion entre el registro categorico de la columna anterior y  los registros de la variable principal de consulta
-#     df_main_var[
-#         "total_"
-#         + main_num_col
-#         + "_of_this_"
-#         + main_cat_col
-#         + "_by_"
-#         + main_column.split("_")[0]
-#     ] = [
-#         list(
-#             df.loc[(df[main_column] == i)]
-#             .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
-#             .sum()
-#             .sort_values(by=main_num_col, ascending=False)[main_num_col]
-#         )[0]
-#         for i in df_main_var[main_column]
-#     ]
-
-#     # Columna que arroja el promedio de la sumatoria de la relacion entre el registro categorico de la columna anterior y  los registros de la variable principal de consulta
-#     df_main_var[
-#         "AVG_"
-#         + main_num_col
-#         + "_of_this_"
-#         + main_cat_col
-#         + "_by_"
-#         + main_column.split("_")[0]
-#     ] = [
-#         round(
-#             (
-#                 list(
-#                     df.loc[(df[main_column] == i)]
-#                     .groupby([main_column, main_cat_col], as_index=False)[main_num_col]
-#                     .mean()
-#                     .sort_values(by=main_num_col, ascending=False)[main_num_col]
-#                 )[0]
-#             ),
-#             2,
-#         )
-#         for i in df_main_var[main_column]
-#     ]
-
-#     df_main_var = df_main_var.sort_values(
-#         by=df_main_var.columns.to_list()[1], ascending=ascen
-#     )
-
-#     return df_main_var
 
 
 def normalize(df, norm_col):

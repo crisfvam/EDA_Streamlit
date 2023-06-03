@@ -44,33 +44,7 @@ class EDA:
         self.bg_image = None
 
     ###--------------------Variables antes de cargar el dataset---------------------###
-    def settings_design_app(self):
-        title_html = f"""
-            <div style="text-align: center;">
-                <h1 style="font-family: Helvetica Neue, serif;
-               font-style: italic;
-               font-weight: bold;
-               font-size: 35px;
-               color: white;
-               background-repeat: no-repeat;
-               background-size: cover;
-               padding: 20px;">Business Intelligence EDA</h1>
-            </div>
-
-        """
-
-        st.markdown(title_html, unsafe_allow_html=True)
-
-        st.markdown(
-            """
-            <style>
-                .stApp {
-                    background-color: #1a1a1a; /* Azul oscuro mezclado con gris */
-                }
-            </style>
-            """,
-            unsafe_allow_html=True,
-        )
+    # def settings_design_app(self):
 
     def load_data(self):
         uploaded_file = st.file_uploader(
@@ -95,6 +69,32 @@ class EDA:
                 st.dataframe(self.dataset)
 
         else:
+            title_html = f"""
+            <div style="text-align: center;">
+                <h1 style="font-family: Helvetica Neue, serif;
+               font-style: italic;
+               font-weight: bold;
+               font-size: 35px;
+               color: white;
+               background-repeat: no-repeat;
+               background-size: cover;
+               padding: 20px;">Business Intelligence EDA</h1>
+            </div>
+
+            """
+
+            st.markdown(title_html, unsafe_allow_html=True)
+
+            st.markdown(
+                """
+            <style>
+                .stApp {
+                    background-color: #1a1a1a; /* Azul oscuro mezclado con gris */
+                }
+            </style>
+            """,
+                unsafe_allow_html=True,
+            )
             self.dataset = None
             link_text = "Proccess Dataframe in this app"
             link_url = "https://crfvalenciam-etl-etl-mvbeyb.streamlit.app/"
@@ -150,28 +150,49 @@ class EDA:
                     ["Emrld", "Turbo", "Inferno", "Plasma", "Magma", "Viridis"],
                     index=0,
                 )
-            st.markdown(
-                "<p style='text-align: center; font-family: Georgia, serif;'>Filtrar by {}</p>".format(
-                    self.main_date_col.replace("_", " ")
-                ),
-                unsafe_allow_html=True,
-            )
-            self.fecha_min, self.fecha_max = st.select_slider(
-                " ",
-                options=self.df[self.main_date_col].sort_values().unique(),
-                value=(
-                    self.df[self.main_date_col].min(),
-                    self.df[self.main_date_col].max(),
-                ),
-            )
 
-            # st.write("---")
-            st.markdown(
-                "<p style='text-align: center; font-family: Georgia, serif;'>Filtrar by {}</p>".format(
-                    self.main_num_col.replace("_", " ")
-                ),
-                unsafe_allow_html=True,
-            )
+            col1, col2, col3, col4 = st.columns(4)
+
+            with col4:
+                try:
+                    self.df[self.main_date_col] = pd.to_datetime(
+                        self.df[self.main_date_col], format="%d/%m/%Y"
+                    )
+
+                    self.df[self.main_date_col] = pd.to_datetime(
+                        self.df[self.main_date_col],
+                        format="%Y-%m-%d %H:%M:%S",
+                        errors="coerce",
+                    ).dt.strftime("%Y/%m/%d")
+
+                    self.fecha_min, self.fecha_max = st.select_slider(
+                        " ",
+                        options=self.df[self.main_date_col]
+                        .sort_values(
+                            self.main_date_col.dt.year, ascending=False, inplace=True
+                        )
+                        .unique(),
+                        value=(
+                            self.df[self.main_date_col].min(),
+                            self.df[self.main_date_col].max(),
+                        ),
+                    )
+
+                except:
+                    st.markdown(
+                        "<p style='text-align: center; font-family: Georgia, serif;'>Filtrar by {}</p>".format(
+                            self.main_date_col.replace("_", " ")
+                        ),
+                        unsafe_allow_html=True,
+                    )
+                    self.fecha_min, self.fecha_max = st.select_slider(
+                        " ",
+                        options=self.df[self.main_date_col].sort_values().unique(),
+                        value=(
+                            self.df[self.main_date_col].min(),
+                            self.df[self.main_date_col].max(),
+                        ),
+                    )
 
             self.total_df = self.df.groupby(self.main_column, as_index=False)[
                 self.main_num_col
@@ -194,26 +215,48 @@ class EDA:
                 .mean()
                 .round(1)
             )
-
-            col1, col2, col3, col4 = st.columns(4)
-
-            with col1:
-                self.total_min = self.total_df[self.main_num_col].min()
-                self.total_min = st.number_input("Mínimun Total", value=0, step=1)
-            with col3:
-                self.mean_min = self.mean_df[self.main_num_col].min()
-                self.mean_min = st.number_input("Mínimun Mean", value=0, step=1)
+            # st.write("---")
 
             with col2:
-                self.total_max = self.total_df[self.main_num_col].max()
-                self.total_max = st.number_input(
-                    "Maximun Total", value=self.total_max, step=1
+                st.markdown(
+                    "<p style='text-align: center; font-family: Georgia, serif;'>Filter by Total {}</p>".format(
+                        self.main_num_col.replace("_", " ")
+                    ),
+                    unsafe_allow_html=True,
                 )
-            with col4:
-                self.mean_max = self.mean_df[self.main_num_col].max()
-                self.mean_max = st.number_input(
-                    "Maximun Mean", value=self.mean_max, step=1.0
+                colum1, colum2 = st.columns(2)
+                with colum1:
+                    self.total_min = self.total_df[self.main_num_col].min()
+                    self.total_min = st.number_input("Mínimun Total", value=0, step=1)
+                with colum2:
+                    self.total_max = self.total_df[self.main_num_col].max()
+                    self.total_max = st.number_input(
+                        "Maximun Total", value=self.total_max, step=1
+                    )
+            with col3:
+                st.markdown(
+                    "<p style='text-align: center; font-family: Georgia, serif;'>Filter by Mean {}</p>".format(
+                        self.main_num_col.replace("_", " ")
+                    ),
+                    unsafe_allow_html=True,
                 )
+                colum1, colum2 = st.columns(2)
+                with colum1:
+                    self.mean_min = self.mean_df[self.main_num_col].min()
+                    self.mean_min = st.number_input("Mínimun Mean", value=0, step=1)
+                with colum2:
+                    self.mean_max = self.mean_df[self.main_num_col].max()
+                    self.mean_max = st.number_input(
+                        "Maximun Mean", value=self.mean_max, step=1.0
+                    )
+
+            with col1:
+                colum1, colum2 = st.columns(2)
+                with colum1:
+                    st.write("---")
+
+            # with col4:
+            #     st.write("---")
 
             # Dataframes para grafico de columna datetime respecto a una variable numerica
 
@@ -245,7 +288,20 @@ class EDA:
                 .sum()
             )
 
-            self.df_top_d.sort_values(self.main_date_col, ascending=False)
+            try:
+                # Intentar convertir la columna a objetos de fecha
+                self.df_filtered_top_date[self.main_date_col] = pd.to_datetime(
+                    self.df_filtered_top_date[self.main_date_col], format="%d/%m/%Y"
+                )
+
+                # Ordenar el DataFrame por el año en orden descendente
+                self.df_filtered_top_date.sort_values(
+                    self.main_date_col.dt.year, ascending=False, inplace=True
+                )
+
+            except:
+                # Manejar la excepción si la columna no se puede convertir a datetime
+                pass
 
             # Dataframes para grafico de columna categorica respecto a una variable numerica
 
@@ -629,10 +685,10 @@ class EDA:
 
                 st.dataframe(self.df_query_filt)
 
-    def run(self, url):
-        self.url = url
+    def run(self):
+        # self.url = url
 
-        self.settings_design_app()
+        # self.settings_design_app()
         self.load_data()
         self.settings_and_process_data()
         self.visualize_data()
@@ -640,6 +696,7 @@ class EDA:
 
 if __name__ == "__main__":
     app = EDA()
+    app.run()
     # url = (
     #     "https://www.giant.com.my/our-history/"  # La URL que deseas pasar a la función
     # )
