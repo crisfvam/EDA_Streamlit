@@ -69,32 +69,32 @@ class EDA:
                 st.dataframe(self.dataset)
 
         else:
-            # title_html = f"""
-            # <div style="text-align: center;">
-            #     <h1 style="font-family: Helvetica Neue, serif;
-            #    font-style: italic;
-            #    font-weight: bold;
-            #    font-size: 35px;
-            #    color: white;
-            #    background-repeat: no-repeat;
-            #    background-size: cover;
-            #    padding: 20px;">Business Intelligence EDA</h1>
-            # </div>
+            title_html = f"""
+            <div style="text-align: center;">
+                <h1 style="font-family: Helvetica Neue, serif;
+               font-style: italic;
+               font-weight: bold;
+               font-size: 35px;
+               color: white;
+               background-repeat: no-repeat;
+               background-size: cover;
+               padding: 20px;">Business Intelligence EDA</h1>
+            </div>
 
-            # """
+            """
 
-            # st.markdown(title_html, unsafe_allow_html=True)
+            st.markdown(title_html, unsafe_allow_html=True)
 
-            # st.markdown(
-            #     """
-            # <style>
-            #     .stApp {
-            #         background-color: #1a1a1a; /* Azul oscuro mezclado con gris */
-            #     }
-            # </style>
-            # """,
-            #     unsafe_allow_html=True,
-            # )
+            st.markdown(
+                """
+            <style>
+                .stApp {
+                    background-color: #1a1a1a; /* Azul oscuro mezclado con gris */
+                }
+            </style>
+            """,
+                unsafe_allow_html=True,
+            )
             self.dataset = None
             link_text = "Proccess Dataframe in this app"
             link_url = "https://crfvalenciam-etl-etl-mvbeyb.streamlit.app/"
@@ -183,14 +183,16 @@ class EDA:
                 )
 
             except:
-                self.fecha_min, self.fecha_max = st.select_slider(
-                    " ",
-                    options=self.df[self.main_date_col].sort_values().unique(),
-                    value=(
-                        self.df[self.main_date_col].min(),
-                        self.df[self.main_date_col].max(),
-                    ),
-                )
+                pass
+                # self.fecha_min, self.fecha_max = st.select_slider(
+                #     " ",
+                #     options=self.df[self.main_date_col].sort_values().unique(),
+                #     value=(
+                #         self.df[self.main_date_col].min(),
+                #         self.df[self.main_date_col].max(),
+                #     ),
+                # )
+
         self.total_df = self.df.groupby(self.main_column, as_index=False)[
             self.main_num_col
         ].sum()
