@@ -154,44 +154,43 @@ class EDA:
             with col5:
                 self.main_date_col = st.selectbox("Datetime column", self.date_cols)
 
-        colum1, colum2 = st.columns(2)
-        with colum1:
-            try:
-                self.df[self.main_date_col] = pd.to_datetime(
-                    self.df[self.main_date_col], format="%d/%m/%Y"
-                )
-
-                self.df[self.main_date_col] = pd.to_datetime(
-                    self.df[self.main_date_col],
-                    format="%Y-%m-%d %H:%M:%S",
-                    errors="coerce",
-                ).dt.strftime("%Y/%m/%d")
-
-                self.fecha_min, self.fecha_max = st.select_slider(
-                    " ",
-                    options=self.df[self.main_date_col]
-                    .sort_values(
-                        self.main_date_col.dt.year,
-                        ascending=False,
-                        inplace=True,
+            colum1, colum2 = st.columns(2)
+            with colum1:
+                try:
+                    self.df[self.main_date_col] = pd.to_datetime(
+                        self.df[self.main_date_col], format="%d/%m/%Y"
                     )
-                    .unique(),
-                    value=(
-                        self.df[self.main_date_col].min(),
-                        self.df[self.main_date_col].max(),
-                    ),
-                )
 
-            except:
-                pass
-                # self.fecha_min, self.fecha_max = st.select_slider(
-                #     " ",
-                #     options=self.df[self.main_date_col].sort_values().unique(),
-                #     value=(
-                #         self.df[self.main_date_col].min(),
-                #         self.df[self.main_date_col].max(),
-                #     ),
-                # )
+                    self.df[self.main_date_col] = pd.to_datetime(
+                        self.df[self.main_date_col],
+                        format="%Y-%m-%d %H:%M:%S",
+                        errors="coerce",
+                    ).dt.strftime("%Y/%m/%d")
+
+                    self.fecha_min, self.fecha_max = st.select_slider(
+                        " ",
+                        options=self.df[self.main_date_col]
+                        .sort_values(
+                            self.main_date_col.dt.year,
+                            ascending=False,
+                            inplace=True,
+                        )
+                        .unique(),
+                        value=(
+                            self.df[self.main_date_col].min(),
+                            self.df[self.main_date_col].max(),
+                        ),
+                    )
+
+                except:
+                    self.fecha_min, self.fecha_max = st.select_slider(
+                        " ",
+                        options=self.df[self.main_date_col].sort_values().unique(),
+                        value=(
+                            self.df[self.main_date_col].min(),
+                            self.df[self.main_date_col].max(),
+                        ),
+                    )
 
         self.total_df = self.df.groupby(self.main_column, as_index=False)[
             self.main_num_col
