@@ -126,134 +126,127 @@ class EDA:
             self.height_two = 400
             self.width_two = 750
 
-            # Filtros interactivos
+            col1, col2, col3, col4, col5 = st.columns(5)
 
             with col1:
-                self.main_column = st.selectbox("Categorical column #1", self.str_list)
-            with col2:
-                self.main_cat_col = st.selectbox("Categorical column #2", self.cat_cols)
-            with col3:
-                self.main_num_col = st.selectbox("Numeric column", self.num_cols)
-            with col4:
-                self.main_date_col = st.selectbox("Datetime column", self.date_cols)
+                self.main_column = st.selectbox("Categoric col #1", self.str_list)
 
-            with col5:
+            # st.write("---")
+
+            with col2:
+                # st.markdown(
+                #     "<p style='text-align: center; font-family: Georgia, serif;'>Filter by Total {}</p>".format(
+                #         self.main_num_col.replace("_", " ")
+                #     ),
+                #     unsafe_allow_html=True,
+                # )
+
+                self.main_cat_col = st.selectbox("Categoric col #2", self.cat_cols)
+
+            with col3:
                 self.ascen = st.selectbox("Top/Last", [False, True])
                 self.ascend = "Top"
                 if self.ascen == True:
                     self.ascend = "Last"
-
-                self.size_title = 2
-            with col6:
-                self.color = st.selectbox(
-                    " Categorical graphic color",
-                    ["Emrld", "Turbo", "Inferno", "Plasma", "Magma", "Viridis"],
-                    index=0,
-                )
-
-            col1, col2, col3, col4 = st.columns(4)
-
             with col4:
-                try:
-                    self.df[self.main_date_col] = pd.to_datetime(
-                        self.df[self.main_date_col], format="%d/%m/%Y"
-                    )
+                self.main_num_col = st.selectbox("Numeric column", self.num_cols)
 
-                    self.df[self.main_date_col] = pd.to_datetime(
-                        self.df[self.main_date_col],
-                        format="%Y-%m-%d %H:%M:%S",
-                        errors="coerce",
-                    ).dt.strftime("%Y/%m/%d")
+            with col5:
+                self.main_date_col = st.selectbox("Datetime column", self.date_cols)
 
-                    self.fecha_min, self.fecha_max = st.select_slider(
-                        " ",
-                        options=self.df[self.main_date_col]
-                        .sort_values(
-                            self.main_date_col.dt.year, ascending=False, inplace=True
-                        )
-                        .unique(),
-                        value=(
-                            self.df[self.main_date_col].min(),
-                            self.df[self.main_date_col].max(),
-                        ),
-                    )
+        colum1, colum2 = st.columns(2)
+        with colum1:
+            try:
+                self.df[self.main_date_col] = pd.to_datetime(
+                    self.df[self.main_date_col], format="%d/%m/%Y"
+                )
 
-                except:
-                    st.markdown(
-                        "<p style='text-align: center; font-family: Georgia, serif;'>Filtrar by {}</p>".format(
-                            self.main_date_col.replace("_", " ")
-                        ),
-                        unsafe_allow_html=True,
-                    )
-                    self.fecha_min, self.fecha_max = st.select_slider(
-                        " ",
-                        options=self.df[self.main_date_col].sort_values().unique(),
-                        value=(
-                            self.df[self.main_date_col].min(),
-                            self.df[self.main_date_col].max(),
-                        ),
-                    )
+                self.df[self.main_date_col] = pd.to_datetime(
+                    self.df[self.main_date_col],
+                    format="%Y-%m-%d %H:%M:%S",
+                    errors="coerce",
+                ).dt.strftime("%Y/%m/%d")
 
-            self.total_df = self.df.groupby(self.main_column, as_index=False)[
+                self.fecha_min, self.fecha_max = st.select_slider(
+                    " ",
+                    options=self.df[self.main_date_col]
+                    .sort_values(
+                        self.main_date_col.dt.year,
+                        ascending=False,
+                        inplace=True,
+                    )
+                    .unique(),
+                    value=(
+                        self.df[self.main_date_col].min(),
+                        self.df[self.main_date_col].max(),
+                    ),
+                )
+
+            except:
+                self.fecha_min, self.fecha_max = st.select_slider(
+                    " ",
+                    options=self.df[self.main_date_col].sort_values().unique(),
+                    value=(
+                        self.df[self.main_date_col].min(),
+                        self.df[self.main_date_col].max(),
+                    ),
+                )
+        self.total_df = self.df.groupby(self.main_column, as_index=False)[
+            self.main_num_col
+        ].sum()
+        self.total_df_date = self.df.groupby(
+            [self.main_column, self.main_date_col], as_index=False
+        )[self.main_num_col].sum()
+
+        self.mean_df = (
+            self.df.groupby(self.main_column, as_index=False)[self.main_num_col]
+            .mean()
+            .round(1)
+        )
+
+        self.mean_df_date = (
+            self.df.groupby([self.main_column, self.main_date_col], as_index=False)[
                 self.main_num_col
-            ].sum()
-
-            self.total_df_date = self.df.groupby(
-                [self.main_column, self.main_date_col], as_index=False
-            )[self.main_num_col].sum()
-
-            self.mean_df = (
-                self.df.groupby(self.main_column, as_index=False)[self.main_num_col]
-                .mean()
-                .round(1)
-            )
-
-            self.mean_df_date = (
-                self.df.groupby([self.main_column, self.main_date_col], as_index=False)[
-                    self.main_num_col
-                ]
-                .mean()
-                .round(1)
-            )
-            # st.write("---")
-
-            with col2:
-                st.markdown(
-                    "<p style='text-align: center; font-family: Georgia, serif;'>Filter by Total {}</p>".format(
-                        self.main_num_col.replace("_", " ")
-                    ),
-                    unsafe_allow_html=True,
+            ]
+            .mean()
+            .round(1)
+        )
+        with colum2:
+            column1, column2, column3, column4 = st.columns(4)
+            with column1:
+                self.total_min = self.total_df[self.main_num_col].min()
+                self.total_min = st.number_input(
+                    "Mín Total {}".format(self.main_num_col), value=0, step=1
                 )
-                colum1, colum2 = st.columns(2)
-                with colum1:
-                    self.total_min = self.total_df[self.main_num_col].min()
-                    self.total_min = st.number_input("Mínimun Total", value=0, step=1)
-                with colum2:
-                    self.total_max = self.total_df[self.main_num_col].max()
-                    self.total_max = st.number_input(
-                        "Maximun Total", value=self.total_max, step=1
-                    )
-            with col3:
-                st.markdown(
-                    "<p style='text-align: center; font-family: Georgia, serif;'>Filter by Mean {}</p>".format(
-                        self.main_num_col.replace("_", " ")
-                    ),
-                    unsafe_allow_html=True,
-                )
-                colum1, colum2 = st.columns(2)
-                with colum1:
-                    self.mean_min = self.mean_df[self.main_num_col].min()
-                    self.mean_min = st.number_input("Mínimun Mean", value=0, step=1)
-                with colum2:
-                    self.mean_max = self.mean_df[self.main_num_col].max()
-                    self.mean_max = st.number_input(
-                        "Maximun Mean", value=self.mean_max, step=1.0
-                    )
 
-            with col1:
-                colum1, colum2 = st.columns(2)
-                with colum1:
-                    st.write("---")
+            with column2:
+                self.total_max = self.total_df[self.main_num_col].max()
+                self.total_max = st.number_input(
+                    "Max Total {}".format(self.main_num_col),
+                    value=self.total_max,
+                    step=1,
+                )
+
+            # st.markdown(
+            #     "<p style='text-align: center; font-family: Georgia, serif;'>Filter by Mean {}</p>".format(
+            #         self.main_num_col.replace("_", " ")
+            #     ),
+            #     unsafe_allow_html=True,
+            # )
+
+            with column3:
+                self.mean_min = self.mean_df[self.main_num_col].min()
+                self.mean_min = st.number_input(
+                    "Mín-Mean {}".format(self.main_num_col), value=0, step=1
+                )
+
+            with column4:
+                self.mean_max = self.mean_df[self.main_num_col].max()
+                self.mean_max = st.number_input(
+                    "Max-mean {}".format(self.main_num_col),
+                    value=self.mean_max,
+                    step=1.0,
+                )
 
             # with col4:
             #     st.write("---")
@@ -427,16 +420,25 @@ class EDA:
 
     def visualize_data(self):
         if self.dataset is not None:
-            st.write("---")
+            # st.write("---")
 
             self.col1, self.col2 = st.columns(2)
 
             # Contenido de la primera columna (col1)
             with self.col1:
-                option = st.selectbox(
-                    "Categorical graphic",
-                    ("Bar", "Pie", "Stacked Bars"),
-                )
+                colu1, colu2 = st.columns(2)
+
+                with colu2:
+                    self.color = st.selectbox(
+                        " Graphic #1 color",
+                        ["Emrld", "Turbo", "Inferno", "Plasma", "Magma", "Viridis"],
+                        index=0,
+                    )
+                with colu1:
+                    option = st.selectbox(
+                        "Categorical graphic",
+                        ("Bar", "Pie", "Stacked Bars"),
+                    )
 
                 if option == "Bar":
                     fig = barv_plotly(
@@ -479,10 +481,12 @@ class EDA:
             # )
 
             with self.col2:
-                option = st.selectbox(
-                    "Datetime graphic",
-                    ("Line", "Multiple-Line"),
-                )
+                colum1, colum2 = st.columns(2)
+                with colum1:
+                    option = st.selectbox(
+                        "Datetime graphic",
+                        ("Line", "Multiple-Line"),
+                    )
 
                 if option == "Line":
                     fig = line_graph(
@@ -506,6 +510,13 @@ class EDA:
                     )
 
                     st.plotly_chart(fig)
+
+                with colum2:
+                    self.color = st.selectbox(
+                        "Graphic #2 color",
+                        ["Emrld", "Turbo", "Inferno", "Plasma", "Magma", "Viridis"],
+                        index=0,
+                    )
 
             st.write("---")
 
