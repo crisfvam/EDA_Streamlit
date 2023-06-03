@@ -118,6 +118,7 @@ class EDA:
 
             self.str_list = list(self.obj_cols) + list(self.cat_cols)
             self.cat_list = list(self.cat_cols) + list(self.obj_cols)
+            self.df[self.num_cols] = self.df[self.num_cols].astype(float)
             self.asce_list = [False, True]
             self.top = 10
             self.orden = 1
@@ -217,7 +218,7 @@ class EDA:
                 with column1:
                     self.total_min = self.total_df[self.main_num_col].min()
                     self.total_min = st.number_input(
-                        "Mín Total {}".format(self.main_num_col), value=0, step=1
+                        "Mín Total {}".format(self.main_num_col), value=0.0, step=1.0
                     )
 
                 with column2:
@@ -225,7 +226,7 @@ class EDA:
                     self.total_max = st.number_input(
                         "Max Total {}".format(self.main_num_col),
                         value=self.total_max,
-                        step=1,
+                        step=1.0,
                     )
 
                 # st.markdown(
@@ -238,7 +239,7 @@ class EDA:
                 with column3:
                     self.mean_min = self.mean_df[self.main_num_col].min()
                     self.mean_min = st.number_input(
-                        "Mín-Mean {}".format(self.main_num_col), value=0, step=1
+                        "Mín-Mean {}".format(self.main_num_col), value=0, step=1.0
                     )
 
                 with column4:
