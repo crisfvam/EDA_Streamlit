@@ -102,6 +102,50 @@ class EDA:
             st.markdown(f"[{link_text}]({link_url})")
             st.write("---")
 
+            st.markdown(
+                "<div align='center'><h1><b><i><font face='Arial'>Requirements Dataset</font></i></b></h1></div>",
+                unsafe_allow_html=True,
+            )
+            st.markdown(
+                """
+                            <style>
+                            .gold-text {
+                                color: goldenrod;
+                                font-weight: bold;
+                                font-size: 1.2em;
+                            }
+                            .blue-text {
+                                color: lightblue;
+                                font-weight: bold;
+                            }
+                            .lightpurple-text {
+                                color: lavender;
+                                font-weight: bold;
+                            }
+                            .lightred-text {
+                                color: lightcoral;
+                                font-weight: bold;
+                            }
+                            </style>
+                            """,
+                unsafe_allow_html=True,
+            )
+
+            st.write(
+                "<span class='blue-text'>About dataset:</span> Must have  been processed before .",
+                unsafe_allow_html=True,
+            )
+
+            st.write(
+                "<span class='blue-text'>Remove Columnas:</span> Must have columns of type datetime, object, category, float, and int.",
+                unsafe_allow_html=True,
+            )
+
+            st.write(
+                "<span class='blue-text'>Files format:</span> CSV files works better.",
+                unsafe_allow_html=True,
+            )
+
     def settings_and_process_data(self):
         if self.dataset is not None:
             modify_data_types(self.dataset, categories_number=150)
