@@ -69,41 +69,26 @@ class EDA:
                 st.dataframe(self.dataset)
 
         else:
-            title_html = f"""
-            <div style="text-align: center;">
-                <h1 style="font-family: Helvetica Neue, serif;
-               font-style: italic;
-               font-weight: bold;
-               font-size: 35px;
-               color: white;
-               background-repeat: no-repeat;
-               background-size: cover;
-               padding: 20px;">Business Intelligence EDA</h1>
-            </div>
+            # title_html = f"""
+            # <div style="text-align: center;">
+            #     <h1 style="font-family: Helvetica Neue, serif;
+            #    font-style: italic;
+            #    font-weight: bold;
+            #    font-size: 35px;
+            #    color: white;
+            #    background-repeat: no-repeat;
+            #    background-size: cover;
+            #    padding: 20px;">Business Intelligence EDA</h1>
+            # </div>
 
-            """
+            # """
 
-            st.markdown(title_html, unsafe_allow_html=True)
+            # st.markdown(title_html, unsafe_allow_html=True)
 
-            st.markdown(
-                """
-            <style>
-                .stApp {
-                    background-color: #1a1a1a; /* Azul oscuro mezclado con gris */
-                }
-            </style>
-            """,
-                unsafe_allow_html=True,
-            )
-            self.dataset = None
-            link_text = "Proccess Dataframe in this app"
-            link_url = "https://crfvalenciam-etl-etl-mvbeyb.streamlit.app/"
-
-            st.markdown(f"[{link_text}]({link_url})")
-            st.write("---")
+            # st.write("---")
 
             st.markdown(
-                "<div align='center'><h1><b><i><font face='Arial'>Requirements Dataset</font></i></b></h1></div>",
+                "<div align='center'><h1><b><i><font face='Arial'>Business Intelligence EDA</font></i></b></h1></div>",
                 unsafe_allow_html=True,
             )
             st.markdown(
@@ -135,6 +120,22 @@ class EDA:
                 "<span class='blue-text'>About dataset:</span> Must have  been processed before .",
                 unsafe_allow_html=True,
             )
+
+            st.markdown(
+                """
+            <style>
+                .stApp {
+                    background-color: #1a1a1a; /* Azul oscuro mezclado con gris */
+                }
+            </style>
+            """,
+                unsafe_allow_html=True,
+            )
+            self.dataset = None
+            link_text = "Proccess Dataframe in this app"
+            link_url = "https://crfvalenciam-etl-etl-mvbeyb.streamlit.app/"
+
+            st.markdown(f"[{link_text}]({link_url})")
 
             st.write(
                 "<span class='blue-text'>Remove Columnas:</span> Must have columns of type datetime, object, category, float, and int.",
