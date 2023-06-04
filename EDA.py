@@ -114,8 +114,6 @@ class EDA:
                 self.cat_cols,
             ) = get_column_types(self.df)
 
-            col1, col2, col3, col4, col5, col6 = st.columns(6)
-
             self.str_list = list(self.obj_cols) + list(self.cat_cols)
             self.cat_list = list(self.cat_cols) + list(self.obj_cols)
             self.df[self.num_cols] = self.df[self.num_cols].astype(float)
