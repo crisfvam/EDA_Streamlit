@@ -138,7 +138,7 @@ class EDA:
             st.markdown(f"[{link_text}]({link_url})")
 
             st.write(
-                "<span class='blue-text'>Remove Columnas:</span> Must have columns of type datetime, object, category, float, and int.",
+                "<span class='blue-text'>Columns Type:</span> Must have columns of type datetime, object, category, float, and int.",
                 unsafe_allow_html=True,
             )
 
