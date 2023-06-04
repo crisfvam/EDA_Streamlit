@@ -105,7 +105,12 @@ class EDA:
     def settings_and_process_data(self):
         if self.dataset is not None:
             modify_data_types(self.dataset, categories_number=150)
+            option_selected = st.checkbox("Type columns")
+            # Verificar si el checkbox está seleccionado
+            if option_selected:
+                st.write(self.dataset.dtypes)
             transformar_columnas_datetime(self.dataset)
+
             self.df = self.dataset.copy()
             (
                 self.date_cols,
