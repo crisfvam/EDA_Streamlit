@@ -1231,7 +1231,7 @@ def mul_bar(df, x_column, y_column, numeric_column):
     fig.update_layout(barmode="stack")
 
     # Mostrar gráfico en Streamlit
-    st.plotly_chart(fig)
+    return fig
 
 
 # # Datos de ejemplo
