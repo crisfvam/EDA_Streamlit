@@ -534,7 +534,7 @@ class EDA:
                 if option == "Line":
                     fig = line_graph(
                         self.df_filtered_top_date,
-                        self.df_filtered_top_date.columns[0],
+                        self.df_filtered_top_date.columns[0][::-1],
                         self.df_filtered_top_date.columns[1],
                         self.height_two,
                         self.width_two,
