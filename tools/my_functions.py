@@ -1371,7 +1371,7 @@ def line_graph(line_df, line_x_column, line_y_column, height_, width_):
     # Crear los datos del gráfico
     data = [
         go.Scatter(
-            x=line_df[line_x_column::-1],
+            x=line_df[line_x_column],
             y=line_df[line_y_column],
             mode="lines",
         )
