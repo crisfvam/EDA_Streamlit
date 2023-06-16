@@ -141,7 +141,9 @@ class EDA:
                 )
                 self.dataset = None
                 link_text = "Proccess Dataframe in this app"
-                link_url = "https://crfvalenciam-etl-etl-mvbeyb.streamlit.app/"
+                link_url = (
+                    "https://crfvalenciam-data-cleansing-etl-r1kik7.streamlit.app/"
+                )
 
                 st.markdown(f"[{link_text}]({link_url})")
 
