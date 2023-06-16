@@ -318,7 +318,7 @@ class EDA:
                     self.ascen,
                 )
                 self.df_top_l = self.df_top_l.sort_values(
-                    self.df_top_l.columns[1], ascending=False
+                    self.df_top_l.columns[2], ascending=False
                 )
 
                 self.df_filtered_top_date = self.df_top_l[
