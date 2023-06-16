@@ -530,7 +530,7 @@ class EDA:
                         "Datetime graphic",
                         ("Line", "Multiple-Line"),
                     )
-
+                st.dataframe(self.df_filtered_top_date)
                 if option == "Line":
                     fig = line_graph(
                         self.df_filtered_top_date,
