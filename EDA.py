@@ -337,7 +337,7 @@ class EDA:
                         self.main_num_col
                     ]
                     .sum()
-                )
+                ).sort_values(by=self.main_date_col, ascending=False)
 
                 # Dataframes para grafico de columna categorica respecto a una variable numerica
 
