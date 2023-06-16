@@ -451,7 +451,7 @@ class EDA:
                         [self.main_date_col, self.main_column, self.main_num_col]
                     ]
                     .drop_duplicates()
-                    .set_index(self.main_date_col)
+                    .set_index(self.main_num_col)
                 )
 
                 self.unique_categoricas_date.columns = [
