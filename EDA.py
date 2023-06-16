@@ -328,6 +328,8 @@ class EDA:
                     & (self.df_top_l[self.df_top_l.columns[0]] <= self.fecha_max)
                 ]
 
+                st.dataframe(self.df_filtered_top_date)
+
                 self.filtro_1 = list(self.df[self.main_column])
                 self.df_top_d = (
                     self.df[
