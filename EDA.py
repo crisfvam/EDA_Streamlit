@@ -167,6 +167,8 @@ class EDA:
             transformar_columnas_datetime(self.dataset)
 
             self.df = self.dataset.copy()
+            modify_data_types(self.df, categories_number=150)
+            transformar_columnas_datetime(self.df)
             (
                 self.date_cols,
                 self.num_cols,

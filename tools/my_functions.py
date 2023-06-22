@@ -204,6 +204,7 @@ def date_columns(df):
 
 
 def get_column_types(df):
+    modify_data_types(df, categories_number=150)
     date_list = []
     num_list = []
     object_list = []
@@ -212,13 +213,7 @@ def get_column_types(df):
     for column_name in df.columns:
         column_type = df[column_name].dtype
 
-        if column_type == "int64" or column_type == "float64":
-            num_list.append(column_name)
-        elif column_type == "object":
-            object_list.append(column_name)
-        elif column_type == "category":
-            category_list.append(column_name)
-        elif column_type == "datetime64[ns]":
+        if column_type == "datetime64[ns]":
             date_list.append(column_name)
         elif (
             column_name.startswith("year")
@@ -227,6 +222,12 @@ def get_column_types(df):
             or column_name.endswith("date")
         ):
             date_list.append(column_name)
+        if column_type == "int64" or column_type == "float64":
+            num_list.append(column_name)
+        elif column_type == "object":
+            object_list.append(column_name)
+        elif column_type == "category":
+            category_list.append(column_name)
 
     return date_list, num_list, object_list, category_list
 
