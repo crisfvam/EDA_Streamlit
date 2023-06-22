@@ -219,7 +219,7 @@ def get_column_types(df):
             or column_name.endswith("date")
         ):
             date_list.append(column_name)
-        elif column_type == "datetime64[ns]":
+        elif column_type == "datetime64":
             date_list.append(column_name)
         elif column_type == "int64" or column_type == "float64":
             num_list.append(column_name)
