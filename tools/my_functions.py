@@ -212,7 +212,14 @@ def get_column_types(df):
     for column_name in df.columns:
         column_type = df[column_name].dtype
 
-        if column_type == "datetime64[ns]":
+        if column_type == "int64" or column_type == "float64":
+            num_list.append(column_name)
+        elif column_type == "object":
+            object_list.append(column_name)
+        elif column_type == "category":
+            category_list.append(column_name)
+
+        elif column_type == "datetime64[ns]":
             date_list.append(column_name)
         elif (
             column_name.startswith("year")
