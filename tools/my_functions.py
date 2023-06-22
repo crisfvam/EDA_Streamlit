@@ -204,6 +204,8 @@ def date_columns(df):
 
 
 def get_column_types(df):
+    from pandas.api.types import is_datetime64_any_dtype
+
     date_list = []
     num_list = []
     object_list = []
@@ -212,21 +214,7 @@ def get_column_types(df):
     for column_name in df.columns:
         column_type = df[column_name].dtype
 
-        if column_type == "int64" or column_type == "float64":
-            num_list.append(column_name)
-        elif column_type == "object":
-            object_list.append(column_name)
-        elif column_type == "category":
-            category_list.append(column_name)
-
-        elif column_type == "datetime64[ns]":
-            date_list.append(column_name)
-        elif (
-            column_name.startswith("year")
-            or column_name.startswith("month")
-            or column_name.startswith("day")
-            or column_name.endswith("date")
-        ):
+        if is_datetime64_any_dtype(column_type):
             date_list.append(column_name)
         elif column_type == "int64" or column_type == "float64":
             num_list.append(column_name)
@@ -234,6 +222,40 @@ def get_column_types(df):
             object_list.append(column_name)
         elif column_type == "category":
             category_list.append(column_name)
+
+    return date_list, num_list, object_list, category_list
+
+    # def get_column_types(df):
+    #     date_list = []
+    #     num_list = []
+    #     object_list = []
+    #     category_list = []
+
+    #     for column_name in df.columns:
+    #         column_type = df[column_name].dtype
+
+    #         if column_type == "int64" or column_type == "float64":
+    #             num_list.append(column_name)
+    #         elif column_type == "object":
+    #             object_list.append(column_name)
+    #         elif column_type == "category":
+    #             category_list.append(column_name)
+
+    #         elif column_type == "datetime64[ns]":
+    #             date_list.append(column_name)
+    #         elif (
+    #             column_name.startswith("year")
+    #             or column_name.startswith("month")
+    #             or column_name.startswith("day")
+    #             or column_name.endswith("date")
+    #         ):
+    #             date_list.append(column_name)
+    # elif column_type == "int64" or column_type == "float64":
+    #     num_list.append(column_name)
+    # elif column_type == "object":
+    #     object_list.append(column_name)
+    # elif column_type == "category":
+    #     category_list.append(column_name)
 
     return date_list, num_list, object_list, category_list
 
