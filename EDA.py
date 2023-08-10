@@ -628,7 +628,7 @@ class EDA:
                     unsafe_allow_html=True,
                 )
 
-                st.dataframe(self.unique_categoricas_tot.sort_values(by='total',ascending=False)))
+                st.dataframe(self.unique_categoricas_tot.sort_values(by='total',ascending=False))
             with col3:
                 # with colu2:
                 st.markdown(
