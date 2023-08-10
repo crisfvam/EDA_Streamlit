@@ -190,7 +190,12 @@ class EDA:
             col1, col2, col3, col4, col5 = st.columns(5)
 
             with col1:
-                self.main_column = st.selectbox("Categoric col #1", self.str_list)
+                if "country" in self.str_list:
+                    default_option = "country"
+                else:
+                    default_option = self.str_list[0]  # Puedes ajustar la opción predeterminada según tus necesidades
+
+                self.main_column = st.selectbox("Categoric col #1", self.str_list, index=self.str_list.index(default_option))
 
             # st.write("---")
 
@@ -210,9 +215,17 @@ class EDA:
                 if self.ascen == True:
                     self.ascend = "Last"
             with col4:
+                if "sales" in self.str_list:
+                    default_option = "sales"
+                else:
+                    default_option = self.num_cols[0]  # Puedes ajustar la opción predeterminada según tus necesidades
                 self.main_num_col = st.selectbox("Numeric column", self.num_cols)
 
             with col5:
+                if "year" in self.str_list:
+                    default_option = "year"
+                else:
+                    default_option = self.date_cols[0]  # Puedes ajustar la opción predeterminada según tus necesidades
                 self.main_date_col = st.selectbox("Datetime column", self.date_cols)
 
             colum1, colum2 = st.columns(2)
@@ -482,7 +495,7 @@ class EDA:
                 with colu2:
                     self.color = st.selectbox(
                         " Graphic #1 color",
-                        ["Emrld", "Turbo", "Inferno", "Plasma", "Magma", "Viridis"],
+                        ["Inferno", "Turbo", "Emrld", "Plasma", "Magma", "Viridis"],
                         index=0,
                     )
                 with colu1:
