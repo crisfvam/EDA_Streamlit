@@ -1454,7 +1454,7 @@ def line_graph_mult(
     for color in unique_colors:
         subset_df = line_df[line_df[line_color_column] == color]
         sorted_df = subset_df.sort_values(ascending=False,
-            by=line_color_column
+            by=line_y_column
         )  # Ordenar por la columna line_x_column
         trace = go.Scatter(
             x=sorted_df[line_x_column],
