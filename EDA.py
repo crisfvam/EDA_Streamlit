@@ -182,9 +182,9 @@ class EDA:
             self.asce_list = [False, True]
             self.top = 10
             self.orden = 1
-            self.height_one = 400
+            self.height_one = 350
             self.width_one = 600
-            self.height_two = 400
+            self.height_two = 350
             self.width_two = 600
 
             col1, col2, col3, col4, col5 = st.columns(5)
