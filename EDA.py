@@ -501,7 +501,7 @@ class EDA:
                 with colu1:
                     option = st.selectbox(
                         "Categorical graphic",
-                        ("Stacked Bars","Bar", "Pie", ),
+                        ("Stacked Bars","Bar", "Pie"),
                     )
 
                 if option == "Bar":
