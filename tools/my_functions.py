@@ -1450,11 +1450,11 @@ def line_graph_mult(
 
     # Crear los datos del gráfico
     data = []
-    unique_colors = line_df[line_color_column].unique()
+    unique_colors = line_df[line_color_column].value_counts().unique()
     for color in unique_colors:
         subset_df = line_df[line_df[line_color_column] == color]
         sorted_df = subset_df.sort_values(ascending=False,
-            by=line_y_column
+            by=line_x_column
         )  # Ordenar por la columna line_x_column
         trace = go.Scatter(
             x=sorted_df[line_x_column],
