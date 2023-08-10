@@ -1254,7 +1254,7 @@ import streamlit as st
 import plotly.graph_objects as go
 
 
-def mul_bar(df, x_column, y_column, numeric_column):
+def mul_bar(df, x_column, y_column, numeric_column, height_, width_):
     fig = go.Figure()
 
     for categoria2 in df[y_column].unique():
@@ -1263,10 +1263,42 @@ def mul_bar(df, x_column, y_column, numeric_column):
             go.Bar(x=subset[x_column], y=subset[numeric_column], name=categoria2)
         )
 
-    fig.update_layout(barmode="stack")
+    # Personalizar el diseño del gráfico
+    fig.update_layout(
+        title=dict(
+            text=y_column.replace("_", " ").capitalize()
+            + " per "
+            + x_column.replace("_", " ")
+            + " per "
+            + numeric_column,
+            x=0.5,
+            xanchor="center",
+            font=dict(size=25, family="Arial"),
+        ),
+        xaxis_title=x_column,
+        yaxis_title=numeric_column,
+        height=height_,
+        width=width_
+    )
 
     # Mostrar gráfico en Streamlit
     return fig
+
+
+
+# def mul_bar(df, x_column, y_column, numeric_column, height_, width_):
+#     fig = go.Figure()
+
+#     for categoria2 in df[y_column].unique():
+#         subset = df[df[y_column] == categoria2]
+#         fig.add_trace(
+#             go.Bar(x=subset[x_column], y=subset[numeric_column], name=categoria2)
+#         )
+
+    
+
+#     # Mostrar gráfico en Streamlit
+#     return fig
 
 
 # # Datos de ejemplo

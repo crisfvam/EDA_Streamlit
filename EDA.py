@@ -533,6 +533,8 @@ class EDA:
                         self.df_top_bar.columns[0],
                         self.df_top_bar.columns[1],
                         self.df_top_bar.columns[2],
+                        self.height_one,
+                        self.width_one,
                     )
 
                     st.plotly_chart(fig)
