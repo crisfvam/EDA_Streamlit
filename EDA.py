@@ -215,18 +215,18 @@ class EDA:
                 if self.ascen == True:
                     self.ascend = "Last"
             with col4:
-                if "sales" in self.str_list:
+                if "sales" in self.num_cols:
                     default_option = "sales"
                 else:
                     default_option = self.num_cols[0]  # Puedes ajustar la opción predeterminada según tus necesidades
-                self.main_num_col = st.selectbox("Numeric column", self.num_cols)
+                self.main_num_col = st.selectbox("Numeric column", self.num_cols, index=self.num_cols.index(default_option))
 
             with col5:
-                if "year" in self.str_list:
+                if "year" in self.date_cols:
                     default_option = "year"
                 else:
                     default_option = self.date_cols[0]  # Puedes ajustar la opción predeterminada según tus necesidades
-                self.main_date_col = st.selectbox("Datetime column", self.date_cols)
+                self.main_date_col = st.selectbox("Datetime column", self.date_cols, index=self.date_cols.index(default_option))
 
             colum1, colum2 = st.columns(2)
             with colum1:
