@@ -183,9 +183,9 @@ class EDA:
             self.top = 10
             self.orden = 1
             self.height_one = 400
-            self.width_one = 700
+            self.width_one = 720
             self.height_two = 400
-            self.width_two = 700
+            self.width_two = 720
 
             col1, col2, col3, col4, col5 = st.columns(5)
 
