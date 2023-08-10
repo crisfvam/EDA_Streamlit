@@ -501,7 +501,7 @@ class EDA:
                 with colu1:
                     option = st.selectbox(
                         "Categorical graphic",
-                        ("Bar", "Pie", "Stacked Bars"),
+                        ("Stacked Bars","Bar", "Pie", ),
                     )
 
                 if option == "Bar":
@@ -549,7 +549,7 @@ class EDA:
                 with colum1:
                     option = st.selectbox(
                         "Datetime graphic",
-                        ("Line", "Multiple-Line"),
+                        ("Multiple-Line","Line"),
                     )
                 # st.dataframe(self.df_filtered_top_date)
                 if option == "Line":
