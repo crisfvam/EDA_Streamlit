@@ -628,7 +628,7 @@ class EDA:
                     unsafe_allow_html=True,
                 )
 
-                st.dataframe(self.unique_categoricas_tot)
+                st.dataframe(self.unique_categoricas_tot.sort_values(by='total',ascending=False)))
             with col3:
                 # with colu2:
                 st.markdown(
@@ -639,7 +639,7 @@ class EDA:
                     unsafe_allow_html=True,
                 )
 
-                st.dataframe(self.unique_categoricas.sort_values(by='mean'))
+                st.dataframe(self.unique_categoricas.sort_values(by='mean', ascending=False))
 
             with col2:
                 # colu1, colu2 = st.columns(2)
@@ -659,7 +659,7 @@ class EDA:
                 #     unsafe_allow_html=True,
                 # )
 
-                st.dataframe(self.unique_categoricas_date_tot.sort_values(by='total'))
+                st.dataframe(self.unique_categoricas_date_tot.sort_values(by='total',ascending=False))
 
             with col4:
                 st.markdown(
@@ -671,7 +671,7 @@ class EDA:
                     unsafe_allow_html=True,
                 )
                 
-                st.dataframe(self.unique_categoricas_date.sort_values(by='mean'))
+                st.dataframe(self.unique_categoricas_date.sort_values(by='mean', ascending=False))
             with col5:
                 st.markdown(
                     "<p style= font-family: Arial;'>Query of {} and {}</p>".format(
