@@ -93,69 +93,69 @@ class EDA:
             # st.markdown(title_html, unsafe_allow_html=True)
 
             # st.write("---")
-            option_selected = st.checkbox("information")
-            if option_selected:
-                st.markdown(
-                    "<div align='center'><h1><b><i><font face='Arial'>Business Intelligence EDA</font></i></b></h1></div>",
-                    unsafe_allow_html=True,
-                )
-                st.markdown(
-                    """
-                                <style>
-                                .gold-text {
-                                    color: goldenrod;
-                                    font-weight: bold;
-                                    font-size: 1.2em;
-                                }
-                                .blue-text {
-                                    color: lightblue;
-                                    font-weight: bold;
-                                }
-                                .lightpurple-text {
-                                    color: lavender;
-                                    font-weight: bold;
-                                }
-                                .lightred-text {
-                                    color: lightcoral;
-                                    font-weight: bold;
-                                }
-                                </style>
-                                """,
-                    unsafe_allow_html=True,
-                )
+            # option_selected = st.checkbox("information")
+            # if option_selected:
+            #     st.markdown(
+            #         "<div align='center'><h1><b><i><font face='Arial'>Business Intelligence EDA</font></i></b></h1></div>",
+            #         unsafe_allow_html=True,
+            #     )
+            #     st.markdown(
+            #         """
+            #                     <style>
+            #                     .gold-text {
+            #                         color: goldenrod;
+            #                         font-weight: bold;
+            #                         font-size: 1.2em;
+            #                     }
+            #                     .blue-text {
+            #                         color: lightblue;
+            #                         font-weight: bold;
+            #                     }
+            #                     .lightpurple-text {
+            #                         color: lavender;
+            #                         font-weight: bold;
+            #                     }
+            #                     .lightred-text {
+            #                         color: lightcoral;
+            #                         font-weight: bold;
+            #                     }
+            #                     </style>
+            #                     """,
+            #         unsafe_allow_html=True,
+            #     )
 
-                st.write(
-                    "<span class='blue-text'>About dataset:</span> Must have  been processed before .",
-                    unsafe_allow_html=True,
-                )
+            #     st.write(
+            #         "<span class='blue-text'>About dataset:</span> Must have  been processed before .",
+            #         unsafe_allow_html=True,
+            #     )
 
-                st.markdown(
-                    """
-                <style>
-                    .stApp {
-                        background-color: #1a1a1a; /* Azul oscuro mezclado con gris */
-                    }
-                </style>
-                """,
-                    unsafe_allow_html=True,
-                )
-                self.dataset = None
-                link_text = "Proccess Dataframe in this app"
-                link_url = (
-                    "https://crfvalenciam-data-cleansing-etl-r1kik7.streamlit.app/"
-                )
+            #     st.markdown(
+            #         """
+            #     <style>
+            #         .stApp {
+            #             background-color: #1a1a1a; /* Azul oscuro mezclado con gris */
+            #         }
+            #     </style>
+            #     """,
+            #         unsafe_allow_html=True,
+            #     )
+            #     self.dataset = None
+            #     link_text = "Proccess Dataframe in this app"
+            #     link_url = (
+            #         "https://crfvalenciam-data-cleansing-etl-r1kik7.streamlit.app/"
+            #     )
 
-                st.markdown(f"[{link_text}]({link_url})")
+            #     st.markdown(f"[{link_text}]({link_url})")
 
-                st.write(
-                    "<span class='blue-text'>Columns Type:</span> Must have columns of type datetime, object, category, float, and int.",
-                    unsafe_allow_html=True,
-                )
+            #     st.write(
+            #         "<span class='blue-text'>Columns Type:</span> Must have columns of type datetime, object, category, float, and int.",
+            #         unsafe_allow_html=True,
+            #     )
 
-                st.write(
-                    "<span class='blue-text'>Files format:</span> CSV files works better.",
-                    unsafe_allow_html=True,
-                )
+            #     st.write(
+            #         "<span class='blue-text'>Files format:</span> CSV files works better.",
+            #         unsafe_allow_html=True,
+            #     )
 
     def settings_and_process_data(self):
         if self.dataset is not None:
