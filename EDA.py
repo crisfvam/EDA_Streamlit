@@ -48,7 +48,7 @@ class EDA:
 
     def load_data(self):
         uploaded_file = st.file_uploader(
-            "Cargar archivo", type=["xlsx", "csv", "pickle"]
+            "Cargar archivo", type=["xlsx", "csv"]
         )
         if uploaded_file is not None:
             file_extension = uploaded_file.name.split(".")[-1]
