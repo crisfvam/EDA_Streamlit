@@ -750,7 +750,7 @@ class EDA:
 
                 # st.dataframe(self.df_query)
 
-                self.df_query.columns = ["total", "mean", "max", "min"]
+                self.df_query.columns = ["total", "mean", "min", "max"]
                 self.df_query = self.df_query.reset_index()
 
                 self.df_query_filt = self.df_query[
