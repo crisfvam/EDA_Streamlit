@@ -758,7 +758,7 @@ class EDA:
                     & (self.df_query[self.main_cat_col] == self.selected_main_cat_col)
                 ]
 
-                self.df_query_filt
+                # self.df_query_filt
                 
                 # self.df_query_filt.columns = [" Query # 3"]
 
