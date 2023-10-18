@@ -720,7 +720,7 @@ class EDA:
                     .round(1)
                 )
 
-                self.df_cat.columns = ["total", "mean", "min", "max"]
+                self.df_cat.columns = ["total", "mean", "max", "min"]
                 self.df_cat = self.df_cat.reset_index()
 
                 self.df_cat_filt = self.df_cat[
@@ -750,7 +750,7 @@ class EDA:
 
                 # st.dataframe(self.df_query)
 
-                self.df_query.columns = ["total", "mean", "min", "max"]
+                self.df_query.columns = ["total", "mean", "max", "min"]
                 self.df_query = self.df_query.reset_index()
 
                 self.df_query_filt = self.df_query[
