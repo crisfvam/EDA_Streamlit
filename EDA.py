@@ -703,7 +703,7 @@ class EDA:
                     .round(1)
                 )
 
-                self.df_obj.columns = ["total", "mean", "min", "max"]
+                self.df_obj.columns = ["total", "mean", "max", "min"]
                 self.df_obj = self.df_obj.reset_index()
 
                 self.df_obj_filt = self.df_obj[
